@@ -49,6 +49,6 @@ export const OtherMasterDropdownSchema = z.object({
 });
 
 export type OtherMaster = z.infer<typeof OtherMasterSchema>;
-export type SaveOtherMasterS = z.infer<typeof SaveOtherMasterSchema>;
+export type SaveOtherMaster = z.infer<typeof SaveOtherMasterSchema>;
 export type DeleteOtherMaster = z.infer<typeof DeleteOtherMasterSchema>;
 export type OtherMasterDropdown = z.infer<typeof OtherMasterDropdownSchema>;
