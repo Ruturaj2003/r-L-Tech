@@ -1,3 +1,3 @@
 export default function App() {
-  return <div>App Shell</div>;
+  return <div className="text-2xl">App Shell</div>;
 }
