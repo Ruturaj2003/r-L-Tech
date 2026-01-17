@@ -52,12 +52,12 @@ export const otherMasterApi = {
    * @param subscID - Subscription ID
    * @returns List of validated OtherMaster records
    */
-  async getList(subscID: number): Promise<OtherMaster[]> {
+  async getList(SubscID: number): Promise<OtherMaster[]> {
     const response: AxiosResponse<unknown> = await apiClient.get(
       "/api/OtherMasters/api/GetData/list",
       {
-        params: { subscID },
-      }
+        params: { SubscID },
+      },
     );
 
     const rawList = extractArray(response.data);
@@ -72,7 +72,7 @@ export const otherMasterApi = {
    */
   async getById(mTransNo: number): Promise<OtherMaster> {
     const response: AxiosResponse<unknown> = await apiClient.get(
-      `/api/OtherMasters/api/GetData/${mTransNo}`
+      `/api/OtherMasters/api/GetData/${mTransNo}`,
     );
 
     return OtherMasterSchema.parse(response.data);
@@ -85,7 +85,7 @@ export const otherMasterApi = {
    */
   async getMasterTypes(): Promise<MasterType[]> {
     const response: AxiosResponse<unknown> = await apiClient.get(
-      "/api/OtherMasters/api/GetMasterType"
+      "/api/OtherMasters/api/GetMasterType",
     );
 
     const rawList = extractArray(response.data);
@@ -106,7 +106,7 @@ export const otherMasterApi = {
           MasterType: "Delete Reason",
           SubscID: subscID,
         },
-      }
+      },
     );
 
     const rawList = extractArray(response.data);
@@ -124,7 +124,7 @@ export const otherMasterApi = {
 
     const response: AxiosResponse<unknown> = await apiClient.post(
       "/api/OtherMasters/api/SaveData",
-      validatedPayload
+      validatedPayload,
     );
 
     if (typeof response.data !== "string") {
@@ -149,7 +149,7 @@ export const otherMasterApi = {
           userNo: validated.userNo,
           reason: validated.reason,
         },
-      }
+      },
     );
   },
 };

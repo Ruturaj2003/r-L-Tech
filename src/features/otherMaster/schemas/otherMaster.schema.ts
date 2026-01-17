@@ -7,9 +7,7 @@ export const OtherMasterSchema = z.object({
   mTransNo: z.number(),
   masterType: z.string().min(1),
   masterName: z.string().min(1),
-  lockStatus: z.enum(["Y", "N"]),
-  status: z.string(),
-  subscID: z.number(),
+  status: z.enum(["Y", "N"]),
 });
 
 /**
