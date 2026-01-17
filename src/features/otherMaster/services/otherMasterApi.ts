@@ -5,14 +5,16 @@ import {
   OtherMasterSchema,
   SaveOtherMasterSchema,
   DeleteOtherMasterSchema,
-  OtherMasterDropdownSchema,
+  MasterTypeSchema,
+  DeleteReasonSchema,
 } from "../schemas";
 
 import {
   type OtherMaster,
   type SaveOtherMaster,
   type DeleteOtherMaster,
-  type OtherMasterDropdown,
+  type MasterType,
+  type DeleteReason,
 } from "../schemas";
 
 /**
@@ -81,13 +83,13 @@ export const otherMasterApi = {
    *
    * @returns List of master type dropdown values
    */
-  async getMasterTypes(): Promise<OtherMasterDropdown[]> {
+  async getMasterTypes(): Promise<MasterType[]> {
     const response: AxiosResponse<unknown> = await apiClient.get(
       "/api/OtherMasters/api/GetMasterType"
     );
 
     const rawList = extractArray(response.data);
-    return rawList.map((item) => OtherMasterDropdownSchema.parse(item));
+    return rawList.map((item) => MasterTypeSchema.parse(item));
   },
 
   /**
@@ -96,7 +98,7 @@ export const otherMasterApi = {
    * @param subscID - Subscription ID
    * @returns List of delete reason dropdown values
    */
-  async getDeleteReasons(subscID: number): Promise<OtherMasterDropdown[]> {
+  async getDeleteReasons(subscID: number): Promise<DeleteReason[]> {
     const response: AxiosResponse<unknown> = await apiClient.get(
       "/api/OtherMasters/api/GetData/Load",
       {
@@ -108,7 +110,7 @@ export const otherMasterApi = {
     );
 
     const rawList = extractArray(response.data);
-    return rawList.map((item) => OtherMasterDropdownSchema.parse(item));
+    return rawList.map((item) => DeleteReasonSchema.parse(item));
   },
 
   /**
