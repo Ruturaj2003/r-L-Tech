@@ -43,12 +43,18 @@ export const DeleteOtherMasterSchema = z.object({
 /**
  * Dropdown item schema (Master Type, Delete Reason)
  */
-export const OtherMasterDropdownSchema = z.object({
-  masterType: z.string().optional(),
-  masterName: z.string().optional(),
+export const MasterTypeSchema = z.object({
+  masterType: z.string(),
+});
+
+export const DeleteReasonSchema = z.object({
+  mTransNo: z.number(),
+  masterName: z.string(),
 });
 
 export type OtherMaster = z.infer<typeof OtherMasterSchema>;
 export type SaveOtherMaster = z.infer<typeof SaveOtherMasterSchema>;
 export type DeleteOtherMaster = z.infer<typeof DeleteOtherMasterSchema>;
-export type OtherMasterDropdown = z.infer<typeof OtherMasterDropdownSchema>;
+
+export type MasterType = z.infer<typeof MasterTypeSchema>;
+export type DeleteReason = z.infer<typeof DeleteReasonSchema>;
