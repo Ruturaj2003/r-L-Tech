@@ -1,10 +1,5 @@
-import { Button } from "./components/ui/button";
+import { AppRouter } from "./router/AppRouter";
 
 export default function App() {
-  return (
-    <div className="text-2xl">
-      App Shell
-      <Button variant={"ghost"}>Hello </Button>
-    </div>
-  );
+  return <AppRouter />;
 }
