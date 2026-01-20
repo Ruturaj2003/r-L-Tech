@@ -26,7 +26,7 @@ import { cn } from "@/lib/utils";
 
 export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar collapsible="icon" {...props}>
+    <Sidebar collapsible="offcanvas" {...props}>
       {/* Header */}
       <SidebarHeader>
         <SidebarMenu>
