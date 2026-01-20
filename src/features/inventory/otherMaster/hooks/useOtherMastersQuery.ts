@@ -1,10 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { otherMasterApi } from "../services/otherMasterApi";
+import { otherMasterApi } from "@/features/inventory/otherMaster/services/otherMasterApi";
 
-import { otherMasterQueryKeys } from "./queryKeys";
+import { otherMasterQueryKeys } from "@/features/inventory/otherMaster/hooks/queryKeys";
 
-import type { OtherMaster } from "../schemas";
+import type { OtherMaster } from "@/features/inventory/otherMaster/schemas";
 
 export function useOtherMastersQuery(subscID: number) {
   return useQuery<OtherMaster[]>({
