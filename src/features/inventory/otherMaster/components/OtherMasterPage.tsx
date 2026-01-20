@@ -24,8 +24,10 @@ const OtherMasterPage = () => {
         <div className="flex-1 bg-green-400">as</div>
 
         {/* Table Navigation */}
-        <div className="h-12 bg-black text-white flex items-center justify-center">
-          as
+        <div className="h-12 bg-slate-200 px-4 text-white justify-between flex items-center ">
+          {/* Page Number */}
+          <div className="bg-slate-400 ">{"<< < 1 2 3 4 5 6 > >>"}</div>
+          <div className="bg-slate-400 ">1 out of 8 Pages (107 Items) </div>
         </div>
       </div>
     </div>
