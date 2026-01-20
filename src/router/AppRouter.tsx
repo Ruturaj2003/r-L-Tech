@@ -1,21 +1,14 @@
-import Navbar from "@/components/Navbar";
-import { OtherMasterPage } from "@/features/otherMaster";
 import { BrowserRouter, Routes, Route } from "react-router";
+import { AppLayout } from "@/components/layout/AppLayout";
+import { OtherMasterPage } from "@/features/inventory/otherMaster";
 
 export function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Home/Default Page */}
-        <Route
-          path="/"
-          element={
-            <>
-              <Navbar />
-              <OtherMasterPage />
-            </>
-          }
-        />
+        <Route element={<AppLayout />}>
+          <Route path="/" element={<OtherMasterPage />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

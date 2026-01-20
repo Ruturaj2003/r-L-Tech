@@ -1,5 +1,5 @@
-import { DarkModeToggle } from "./darkModeToggle";
 import { User } from "lucide-react";
+import { DarkModeToggle } from "./DarkModeToggle";
 
 const Navbar = () => {
   return (
