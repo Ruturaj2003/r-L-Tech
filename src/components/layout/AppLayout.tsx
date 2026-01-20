@@ -14,8 +14,8 @@ export function AppLayout() {
         <Navbar />
 
         {/* Main content area scrolls independently */}
-        <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-6 bg-muted/10">
-          <div className="mx-auto w-full max-w-full">
+        <main className="flex-1 overflow-y-clip overflow-x-hidden p-4 md:p-6 md:pt-2 md:pb-2 bg-muted/10">
+          <div className="mx-auto w-full max-w-full ">
             <Outlet />
           </div>
         </main>
