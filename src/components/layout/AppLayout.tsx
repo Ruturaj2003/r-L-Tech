@@ -1,20 +1,25 @@
 import { Outlet } from "react-router";
-// shadcn-based
 import Navbar from "../Navbar";
+import { AppSidebar } from "./AppSidebar";
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 
 export function AppLayout() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <div className="flex">
-        <h1>Sidebar</h1>
+    <SidebarProvider>
+      {/* Sidebar stays fixed to the left */}
+      <AppSidebar />
 
-        <div className="flex-1 flex flex-col">
-          <Navbar />
-          <main className="flex-1 p-4">
+      <SidebarInset className="flex flex-col h-screen overflow-hidden">
+        {/* Navbar is sticky inside the inset */}
+        <Navbar />
+
+        {/* Main content area scrolls independently */}
+        <main className="flex-1 overflow-y-auto overflow-x-hidden p-4 md:p-6 bg-muted/10">
+          <div className="mx-auto w-full max-w-full">
             <Outlet />
-          </main>
-        </div>
-      </div>
-    </div>
+          </div>
+        </main>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }
