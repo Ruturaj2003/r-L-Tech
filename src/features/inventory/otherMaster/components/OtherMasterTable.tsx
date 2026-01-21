@@ -22,12 +22,16 @@ interface OtherMasterTableProps {
   columnData: ColumnDef<OtherMaster>[];
   data: OtherMaster[];
   isLoading: boolean;
+  globalFilter: string;
+  setGlobalFilter: (value: string) => void;
 }
 
 export const OtherMasterTable = ({
   data,
   isLoading,
   columnData,
+  globalFilter,
+  setGlobalFilter,
 }: OtherMasterTableProps) => {
   /* -----------------------------
      TanStack controlled state
@@ -53,16 +57,19 @@ export const OtherMasterTable = ({
       columnFilters,
       sorting,
       pagination,
+      globalFilter,
     },
 
     onColumnFiltersChange: setColumnFilters,
     onSortingChange: setSorting,
     onPaginationChange: setPagination,
+    onGlobalFilterChange: setGlobalFilter,
 
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    globalFilterFn: "includesString",
   });
 
   if (isLoading) {
@@ -150,7 +157,7 @@ export const OtherMasterTable = ({
                         <div
                           className="
                             absolute left-0 mt-2 z-50
-                            w-[200px]
+                            w-50
                             rounded-md border border-border
                             bg-card p-2 shadow-md
                           "
