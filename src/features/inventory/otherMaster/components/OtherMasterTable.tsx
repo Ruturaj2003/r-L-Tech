@@ -5,11 +5,12 @@ import {
   useReactTable,
   getSortedRowModel,
 } from "@tanstack/react-table";
+import type { ColumnDef } from "@tanstack/react-table";
 
-import { otherMasterColumns } from "./OtherMaster.colums";
 import type { OtherMaster } from "../schemas";
 
 interface OtherMasterTableProps {
+  columnData: ColumnDef<OtherMaster>[];
   data: OtherMaster[];
   pageIndex: number;
   pageSize: number;
@@ -21,10 +22,11 @@ export const OtherMasterTable = ({
   pageIndex,
   pageSize,
   isLoading,
+  columnData,
 }: OtherMasterTableProps) => {
   const table = useReactTable({
     data,
-    columns: otherMasterColumns,
+    columns: columnData,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     state: {

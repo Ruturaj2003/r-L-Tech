@@ -3,6 +3,7 @@ import { useOtherMastersQuery } from "../hooks/useOtherMastersQuery";
 import { OtherMasterHeader } from "./OtherMasterHeader";
 import { OtherMasterPagination } from "./OtherMasterPagination";
 import { OtherMasterTable } from "./OtherMasterTable";
+import { otherMasterColumns } from "./OtherMaster.colums";
 
 const PAGE_SIZE = 10;
 
@@ -24,6 +25,7 @@ const OtherMasterPage = () => {
       <div className="flex flex-col h-full">
         <OtherMasterHeader />
         <OtherMasterTable
+          columnData={otherMasterColumns}
           data={pagedData}
           pageIndex={pageIndex}
           pageSize={PAGE_SIZE}
