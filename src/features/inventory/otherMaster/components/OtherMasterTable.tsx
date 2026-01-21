@@ -8,6 +8,7 @@ import {
 import type { ColumnDef } from "@tanstack/react-table";
 
 import type { OtherMaster } from "../schemas";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 interface OtherMasterTableProps {
   columnData: ColumnDef<OtherMaster>[];
@@ -60,12 +61,18 @@ export const OtherMasterTable = ({
                         className={`border-b border-border px-3 py-2 text-left select-none
     ${header.column.getCanSort() ? "cursor-pointer" : ""}`}
                       >
-                        {flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
-                        {header.column.getIsSorted() === "asc" && "▲"}
-                        {header.column.getIsSorted() === "desc" && "▼"}
+                        <div className="flex items-center gap-1">
+                          {flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
+                          {header.column.getIsSorted() === "asc" && (
+                            <ChevronUp className="h-4 w-4 text-muted-foreground" />
+                          )}
+                          {header.column.getIsSorted() === "desc" && (
+                            <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                          )}
+                        </div>
                       </th>
                     ))}
                   </tr>
