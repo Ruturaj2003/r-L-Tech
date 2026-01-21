@@ -1,66 +1,24 @@
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-import { useOtherMasterMutation } from "../hooks/useOtherMasterMutations";
+import { useForm } from "react-hook-form";
+import z from "zod";
+import { FormContainer } from "./FormContainer";
+import { FormField } from "./FormField";
 import {
-  OtherMasterFormSchema,
-  type OtherMasterFormData,
-  type SaveOtherMaster,
-} from "../schemas";
+  ControlledInput,
+  ControlledSelect,
+  ControlledTextarea,
+} from "./ControlledInput";
 
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
+const OtherMasterFormSchema = z.object({
+  masterType: z.string().min(1, "Master Type is Not weast"),
+  masterName: z.string().min(1, "Master Name is required"),
+  lockStatus: z.enum(["Y", "N"]),
+  deleteReason: z.string().optional(),
+});
 
-export const OtherMasterForm = () => {
-  const FORM_FIELDS = [
-    {
-      name: "masterType",
-      label: "Master Type",
-      type: "input",
-      required: true,
-    },
-    {
-      name: "masterName",
-      label: "Master Name",
-      type: "input",
-      required: true,
-    },
-    {
-      name: "lockStatus",
-      label: "Lock Status",
-      type: "select",
-      required: true,
-      options: [
-        { label: "No", value: "N" },
-        { label: "Yes", value: "Y" },
-      ],
-    },
-    {
-      name: "deleteReason",
-      label: "Delete Reason",
-      type: "textarea",
-      required: false,
-    },
-  ] as const;
+type OtherMasterFormData = z.infer<typeof OtherMasterFormSchema>;
 
-  const { saveMutation } = useOtherMasterMutation(1);
-
+export default function OtherMasterForm() {
   const {
     register,
     handleSubmit,
@@ -77,98 +35,94 @@ export const OtherMasterForm = () => {
   });
 
   const onSubmit = async (data: OtherMasterFormData) => {
-    const payload: SaveOtherMaster = {
-      ...data,
-      status: "Insert",
-      createdBy: 1,
-      createdOn: new Date().toISOString(),
-      mTransNo: 0,
-      mCount: 0,
-      systemIP: "0.0.0.0",
-      subscID: 1,
-    };
-
-    try {
-      await saveMutation.mutateAsync(payload);
-    } catch (error) {
-      console.error("Failed to save master:", error);
-    }
+    console.log("Form submitted:", data);
+    // Your mutation logic here
+    await new Promise((resolve) => setTimeout(resolve, 1000));
   };
 
   return (
-    <Card className="max-w-xl">
-      <CardHeader>
-        <CardTitle>Other Master</CardTitle>
-      </CardHeader>
+    <FormContainer
+      className="w-full"
+      title="Other Master"
+      onSubmit={handleSubmit(onSubmit)}
+      isSubmitting={isSubmitting}
+      submitLabel="Save Master"
+    >
+      {/* NOW YOU DESIGN YOUR LAYOUT HOWEVER YOU WANT */}
+      <div className="grid grid-cols-2 gap-x-2 justify-between">
+        <FormField
+          label="Master Type"
+          name="masterType"
+          required
+          error={errors.masterType?.message}
+        >
+          <ControlledInput
+            className="bg-amber-400 w-fit"
+            name="masterType"
+            register={register}
+            error={errors.masterType?.message}
+            placeholder="Enter master type"
+          />
+        </FormField>
 
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <CardContent className="space-y-6">
-          {FORM_FIELDS.map((field) => {
-            const error = errors[field.name];
+        <FormField
+          label="Master Name"
+          name="masterName"
+          required
+          error={errors.masterName?.message}
+        >
+          <ControlledInput
+            name="masterName"
+            register={register}
+            error={errors.masterName?.message}
+            placeholder="Enter master name"
+          />
+        </FormField>
+      </div>
 
-            return (
-              <div key={field.name} className="space-y-2">
-                <Label htmlFor={field.name}>
-                  {field.label}
-                  {field.required && (
-                    <span className="text-muted-foreground"> *</span>
-                  )}
-                </Label>
+      <FormField
+        label="Lock Status"
+        name="lockStatus"
+        required
+        error={errors.lockStatus?.message}
+      >
+        <ControlledSelect
+          name="lockStatus"
+          options={[
+            { label: "No", value: "N" },
+            { label: "Yes", value: "Y" },
+          ]}
+          setValue={setValue}
+          error={errors.lockStatus?.message}
+          defaultValue="N"
+        />
+      </FormField>
 
-                {field.type === "input" && (
-                  <Input
-                    id={field.name}
-                    {...register(field.name)}
-                    aria-invalid={!!error}
-                  />
-                )}
+      <FormField
+        label="Delete Reason"
+        name="deleteReason"
+        error={errors.deleteReason?.message}
+      >
+        <ControlledTextarea
+          name="deleteReason"
+          register={register}
+          error={errors.deleteReason?.message}
+          placeholder="Optional: Explain why this master was deleted"
+          rows={4}
+        />
+      </FormField>
 
-                {field.type === "textarea" && (
-                  <Textarea
-                    id={field.name}
-                    {...register(field.name)}
-                    aria-invalid={!!error}
-                  />
-                )}
-
-                {field.type === "select" && (
-                  <Select
-                    defaultValue="N"
-                    onValueChange={(value) =>
-                      setValue(field.name, value as "Y" | "N", {
-                        shouldValidate: true,
-                      })
-                    }
-                  >
-                    <SelectTrigger aria-invalid={!!error}>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {field.options.map((opt) => (
-                        <SelectItem key={opt.value} value={opt.value}>
-                          {opt.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                )}
-
-                {error && (
-                  <p role="alert" className="text-sm text-destructive">
-                    {error.message}
-                  </p>
-                )}
-              </div>
-            );
-          })}
-        </CardContent>
-
-        <CardFooter className="flex justify-end">
-          <Button type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Saving..." : "Save Master"}
-          </Button>
-        </CardFooter>
-      </form>
-    </Card>
+      {/* Example: Custom two-column layout */}
+      {/* 
+      <div className="grid grid-cols-2 gap-4">
+        <FormField label="Field 1" name="field1">
+          <ControlledInput name="field1" register={register} />
+        </FormField>
+        <FormField label="Field 2" name="field2">
+          <ControlledInput name="field2" register={register} />
+        </FormField>
+      </div>
+      */}
+    </FormContainer>
   );
-};
+}

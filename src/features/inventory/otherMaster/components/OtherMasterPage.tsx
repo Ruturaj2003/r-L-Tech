@@ -3,7 +3,7 @@ import { useOtherMastersQuery } from "../hooks/useOtherMastersQuery";
 import { otherMasterColumns } from "./OtherMaster.colums";
 import { OtherMasterHeader } from "./OtherMasterHeader";
 import { OtherMasterTable } from "./OtherMasterTable";
-import { OtherMasterForm } from "./OtherMasterForm";
+import OtherMasterForm from "./OtherMasterForm";
 
 const OtherMasterPage = () => {
   const subscID = 1;
