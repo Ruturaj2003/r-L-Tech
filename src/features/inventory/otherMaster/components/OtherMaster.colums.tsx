@@ -40,7 +40,8 @@ export const otherMasterColumns: ColumnDef<OtherMaster>[] = [
   },
   {
     id: "actions",
-    header: "Actions",
+    // So that Actions Come in Center
+    header: () => <div className="text-center w-full">Actions</div>,
     cell: ({ row }) => {
       const id = row.original.mTransNo;
       console.log("Temp Log from otherMaster Colums", id);

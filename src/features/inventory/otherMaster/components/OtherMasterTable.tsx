@@ -5,15 +5,28 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
-import { useOtherMastersQuery } from "../hooks/useOtherMastersQuery";
 import { otherMasterColumns } from "./OtherMaster.colums";
+import type { OtherMaster } from "../schemas";
 
-export const OtherMasterTable = ({ subscID = 1 }: { subscID: number }) => {
-  const { data = [], isLoading } = useOtherMastersQuery(subscID);
+interface OtherMasterTableProps {
+  data: OtherMaster[];
+  pageIndex: number;
+  pageSize: number;
+  isLoading: boolean;
+}
+export const OtherMasterTable = ({
+  data,
+  pageIndex,
+  pageSize,
+  isLoading,
+}: OtherMasterTableProps) => {
   const table = useReactTable({
     data,
     columns: otherMasterColumns,
     getCoreRowModel: getCoreRowModel(),
+    state: {
+      pagination: { pageIndex, pageSize },
+    },
   });
 
   if (isLoading) {

@@ -1,16 +1,39 @@
-export const OtherMasterPagination = () => {
-  return (
-    <div className="border-t border-border bg-muted px-3 py-2">
-      <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-        {/* Page controls */}
-        <div className="flex justify-center sm:justify-start text-xs">
-          {"<< < 1 2 3 4 5 6 > >>"}
-        </div>
+interface OtherMasterPaginationProps {
+  pageIndex: number;
+  pageSize: number;
+  totalItems: number;
+  onPageChange: (pageIndex: number) => void;
+}
 
-        {/* Meta info */}
-        <div className="text-center sm:text-right text-xs text-muted-foreground">
-          1 / 8 • 107 items
-        </div>
+export const OtherMasterPagination = ({
+  pageIndex,
+  pageSize,
+  totalItems,
+  onPageChange,
+}: OtherMasterPaginationProps) => {
+  const totalPages = Math.ceil(totalItems / pageSize);
+  return (
+    <div className="border-t border-border bg-muted px-3 py-2 flex items-center justify-between text-xs">
+      <div className="text-muted-foreground">
+        Page {pageIndex + 1} of {totalPages} • {totalItems} items
+      </div>
+
+      <div className="flex gap-2">
+        <button
+          onClick={() => onPageChange(pageIndex - 1)}
+          disabled={pageIndex === 0}
+          className="px-2 py-1 border border-border rounded disabled:opacity-50"
+        >
+          Prev
+        </button>
+
+        <button
+          onClick={() => onPageChange(pageIndex + 1)}
+          disabled={pageIndex + 1 >= totalPages}
+          className="px-2 py-1 border border-border rounded disabled:opacity-50"
+        >
+          Next
+        </button>
       </div>
     </div>
   );

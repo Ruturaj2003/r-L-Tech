@@ -1,15 +1,38 @@
+import { useState } from "react";
+import { useOtherMastersQuery } from "../hooks/useOtherMastersQuery";
 import { OtherMasterHeader } from "./OtherMasterHeader";
 import { OtherMasterPagination } from "./OtherMasterPagination";
 import { OtherMasterTable } from "./OtherMasterTable";
 
+const PAGE_SIZE = 10;
+
 const OtherMasterPage = () => {
+  // TODO: Fetch From Real Source
+  const subscID = 1;
+  const [pageIndex, setPageIndex] = useState(0);
+  const { data = [], isLoading } = useOtherMastersQuery(subscID);
+  const totalItems = data.length;
+  const pagedData = data.slice(
+    pageIndex * PAGE_SIZE,
+    pageIndex * PAGE_SIZE + PAGE_SIZE,
+  );
   return (
-    <div className="w-full h-[88vh] rounded-sm ">
+    <div className="w-full h-full rounded-sm ">
       {/* Page Container */}
       <div className="flex flex-col h-full">
         <OtherMasterHeader />
-        <OtherMasterTable />
-        <OtherMasterPagination />
+        <OtherMasterTable
+          data={pagedData}
+          pageIndex={pageIndex}
+          pageSize={PAGE_SIZE}
+          isLoading={isLoading}
+        />
+        <OtherMasterPagination
+          pageIndex={pageIndex}
+          pageSize={PAGE_SIZE}
+          totalItems={totalItems}
+          onPageChange={setPageIndex}
+        />
       </div>
     </div>
   );
