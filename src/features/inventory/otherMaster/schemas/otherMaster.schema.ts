@@ -17,13 +17,13 @@ export const OtherMasterSchema = z.object({
 
 export const SaveOtherMasterSchema = z.object({
   mTransNo: z.number(),
-  mCount: z.number(),
+  mCount: z.number().default(0),
   masterType: z.string().min(1),
   masterName: z.string().min(1),
-  systemIP: z.string(),
+  systemIP: z.string().default("0"),
   lockStatus: z.enum(["Y", "N"]),
-  createdBy: z.number(),
-  createdOn: z.string(),
+  createdBy: z.number(), // from localStoreage => LogUser MTransNo
+  createdOn: z.string(), // ISO String
   subscID: z.number(),
   status: z.enum(["Insert", "Update"]),
 });

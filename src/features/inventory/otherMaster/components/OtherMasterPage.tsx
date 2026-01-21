@@ -3,6 +3,7 @@ import { useOtherMastersQuery } from "../hooks/useOtherMastersQuery";
 import { otherMasterColumns } from "./OtherMaster.colums";
 import { OtherMasterHeader } from "./OtherMasterHeader";
 import { OtherMasterTable } from "./OtherMasterTable";
+import { OtherMasterForm } from "./OtherMasterForm";
 
 const OtherMasterPage = () => {
   const subscID = 1;
@@ -19,14 +20,17 @@ const OtherMasterPage = () => {
           globalFilter={globalFilter}
           setGlobalFilter={setGlobalFilter}
         />
+        <OtherMasterForm />
 
-        <OtherMasterTable
-          columnData={columnData}
-          data={data}
-          isLoading={isLoading}
-          globalFilter={globalFilter}
-          setGlobalFilter={setGlobalFilter}
-        />
+        <div className="">
+          <OtherMasterTable
+            columnData={columnData}
+            data={data}
+            isLoading={isLoading}
+            globalFilter={globalFilter}
+            setGlobalFilter={setGlobalFilter}
+          />
+        </div>
       </div>
     </div>
   );
