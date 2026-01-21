@@ -14,16 +14,19 @@ export const otherMasterColumns: ColumnDef<OtherMaster>[] = [
   {
     accessorKey: "masterType",
     header: "Type",
+    enableColumnFilter: false,
   },
   {
     accessorKey: "masterName",
     header: "Name",
     enableSorting: true,
+    enableColumnFilter: true,
   },
   {
     accessorKey: "status",
     header: "Status",
     enableSorting: true,
+    enableColumnFilter: false,
     cell: ({ getValue }) => {
       const value = getValue<"Y" | "N">();
 
