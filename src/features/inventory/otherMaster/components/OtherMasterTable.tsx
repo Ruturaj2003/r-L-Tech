@@ -16,6 +16,7 @@ import type {
 
 import type { OtherMaster } from "../schemas";
 import { ChevronDown, ChevronUp, Search, X } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface OtherMasterTableProps {
   columnData: ColumnDef<OtherMaster>[];
@@ -38,8 +39,8 @@ export const OtherMasterTable = ({
     pageSize: 10,
   });
 
-  // NEW: Track which column filters are "open" (showing input)
-  const [openFilters, setOpenFilters] = useState<Set<string>>(new Set());
+  // UX: only ONE filter open at a time
+  const [openFilterId, setOpenFilterId] = useState<string | null>(null);
 
   /* -----------------------------
      Table instance
@@ -80,16 +81,17 @@ export const OtherMasterTable = ({
       {/* TABLE */}
       <div className="flex-1 overflow-auto">
         <table className="min-w-175 w-full border-collapse text-sm">
-          <thead className="sticky top-0 bg-muted text-muted-foreground">
+          <thead className="sticky top-0 bg-muted text-muted-foreground z-10">
             {table.getHeaderGroups().map((group) => (
               <tr key={group.id}>
                 {group.headers.map((header) => {
-                  const isFilterOpen = openFilters.has(header.column.id);
+                  const isFilterOpen = openFilterId === header.column.id;
+                  const hasFilterValue = !!header.column.getFilterValue();
 
                   return (
                     <th
                       key={header.id}
-                      className="border-b border-border px-3 py-2 align-top text-left"
+                      className="relative border-b border-border px-3 py-2 align-top text-left"
                     >
                       {/* HEADER LINE */}
                       <div className="flex items-center gap-2">
@@ -124,17 +126,18 @@ export const OtherMasterTable = ({
                             type="button"
                             onClick={(e) => {
                               e.stopPropagation();
-                              setOpenFilters((prev) => {
-                                const newSet = new Set(prev);
-                                if (isFilterOpen) {
-                                  newSet.delete(header.column.id);
-                                } else {
-                                  newSet.add(header.column.id);
-                                }
-                                return newSet;
-                              });
+                              setOpenFilterId((prev) =>
+                                prev === header.column.id
+                                  ? null
+                                  : header.column.id,
+                              );
                             }}
-                            className="text-muted-foreground hover:text-foreground"
+                            className={cn(
+                              "transition-colors",
+                              hasFilterValue
+                                ? "text-primary"
+                                : "text-muted-foreground hover:text-foreground",
+                            )}
                             title="Filter"
                           >
                             <Search className="h-4 w-4" />
@@ -142,36 +145,53 @@ export const OtherMasterTable = ({
                         )}
                       </div>
 
-                      {/* FILTER INPUT */}
+                      {/* FILTER POPOVER */}
                       {isFilterOpen && (
-                        <div className="mt-2 flex items-center gap-1">
-                          <input
-                            autoFocus
-                            value={
-                              (header.column.getFilterValue() ?? "") as string
+                        <div
+                          className="
+                            absolute left-0 mt-2 z-50
+                            w-[200px]
+                            rounded-md border border-border
+                            bg-card p-2 shadow-md
+                          "
+                          onClick={(e) => e.stopPropagation()}
+                          onKeyDown={(e) => {
+                            if (e.key === "Escape") {
+                              setOpenFilterId(null);
                             }
-                            onChange={(e) =>
-                              header.column.setFilterValue(e.target.value)
-                            }
-                            placeholder="Search…"
-                            className="h-8 w-full rounded border border-input bg-background px-2 text-sm"
-                          />
+                          }}
+                        >
+                          <div className="flex items-center gap-1">
+                            <Search className="h-4 w-4 text-muted-foreground" />
 
-                          <button
-                            type="button"
-                            onClick={() => {
-                              header.column.setFilterValue(undefined);
-                              setOpenFilters((prev) => {
-                                const newSet = new Set(prev);
-                                newSet.delete(header.column.id);
-                                return newSet;
-                              });
-                            }}
-                            className="text-muted-foreground hover:text-foreground"
-                            title="Clear filter"
-                          >
-                            <X className="h-4 w-4" />
-                          </button>
+                            <input
+                              autoFocus
+                              value={
+                                (header.column.getFilterValue() ?? "") as string
+                              }
+                              onChange={(e) =>
+                                header.column.setFilterValue(e.target.value)
+                              }
+                              placeholder="Search"
+                              className="
+                                h-8 w-full
+                                bg-background px-2 text-sm
+                                outline-none
+                              "
+                            />
+
+                            <button
+                              type="button"
+                              onClick={() => {
+                                header.column.setFilterValue(undefined);
+                                setOpenFilterId(null);
+                              }}
+                              className="text-muted-foreground hover:text-foreground"
+                              title="Clear filter"
+                            >
+                              <X className="h-4 w-4" />
+                            </button>
+                          </div>
                         </div>
                       )}
                     </th>

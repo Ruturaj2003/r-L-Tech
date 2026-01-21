@@ -17,6 +17,11 @@ export const otherMasterColumns: ColumnDef<OtherMaster>[] = [
     enableColumnFilter: false,
   },
   {
+    accessorKey: "masterType",
+    header: "Type",
+    enableColumnFilter: false,
+  },
+  {
     accessorKey: "masterName",
     header: "Name",
     enableSorting: true,

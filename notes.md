@@ -48,3 +48,5 @@ All API service logic must reside in the `services/` folder.
 ```
 
 ```
+
+### Add the Customer Fotter in the Table
