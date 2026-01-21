@@ -9,13 +9,15 @@ const PAGE_SIZE = 10;
 const OtherMasterPage = () => {
   // TODO: Fetch From Real Source
   const subscID = 1;
-  const [pageIndex, setPageIndex] = useState(0);
   const { data = [], isLoading } = useOtherMastersQuery(subscID);
+
+  const [pageIndex, setPageIndex] = useState(0);
   const totalItems = data.length;
   const pagedData = data.slice(
     pageIndex * PAGE_SIZE,
     pageIndex * PAGE_SIZE + PAGE_SIZE,
   );
+
   return (
     <div className="w-full h-full rounded-sm ">
       {/* Page Container */}

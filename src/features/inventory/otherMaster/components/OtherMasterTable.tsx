@@ -3,6 +3,7 @@ import {
   flexRender,
   getCoreRowModel,
   useReactTable,
+  getSortedRowModel,
 } from "@tanstack/react-table";
 
 import { otherMasterColumns } from "./OtherMaster.colums";
@@ -14,6 +15,7 @@ interface OtherMasterTableProps {
   pageSize: number;
   isLoading: boolean;
 }
+
 export const OtherMasterTable = ({
   data,
   pageIndex,
@@ -24,6 +26,7 @@ export const OtherMasterTable = ({
     data,
     columns: otherMasterColumns,
     getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
     state: {
       pagination: { pageIndex, pageSize },
     },
@@ -51,12 +54,16 @@ export const OtherMasterTable = ({
                     {group.headers.map((header) => (
                       <th
                         key={header.id}
-                        className="border-b border-border px-3 py-2 text-left"
+                        onClick={header.column.getToggleSortingHandler()}
+                        className={`border-b border-border px-3 py-2 text-left select-none
+    ${header.column.getCanSort() ? "cursor-pointer" : ""}`}
                       >
                         {flexRender(
                           header.column.columnDef.header,
                           header.getContext(),
                         )}
+                        {header.column.getIsSorted() === "asc" && "▲"}
+                        {header.column.getIsSorted() === "desc" && "▼"}
                       </th>
                     ))}
                   </tr>

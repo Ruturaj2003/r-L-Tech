@@ -18,10 +18,12 @@ export const otherMasterColumns: ColumnDef<OtherMaster>[] = [
   {
     accessorKey: "masterName",
     header: "Name",
+    enableSorting: true,
   },
   {
     accessorKey: "status",
     header: "Status",
+    enableSorting: true,
     cell: ({ getValue }) => {
       const value = getValue<"Y" | "N">();
 
