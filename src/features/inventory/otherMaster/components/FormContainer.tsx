@@ -15,8 +15,10 @@ interface FormContainerProps {
   children: React.ReactNode;
   className?: string;
   setModalClose?: () => void;
+  mode: FORM_MODE;
 }
 
+import type { FORM_MODE } from "../types/otherMaster.types";
 export const FormContainer = ({
   title,
   onSubmit,
@@ -25,6 +27,7 @@ export const FormContainer = ({
   children,
   className = "max-w-xl",
   setModalClose,
+  mode,
 }: FormContainerProps) => {
   return (
     <Card className={className}>
@@ -40,10 +43,11 @@ export const FormContainer = ({
                 Close
               </Button>
             )}
-
-            <Button type="submit" disabled={isSubmitting} onClick={onSubmit}>
-              {isSubmitting ? "Saving..." : submitLabel}
-            </Button>
+            {mode !== "View" && (
+              <Button type="submit" disabled={isSubmitting} onClick={onSubmit}>
+                {isSubmitting ? "Saving..." : submitLabel}
+              </Button>
+            )}
           </div>
         </CardFooter>
       </div>

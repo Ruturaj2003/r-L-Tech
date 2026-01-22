@@ -3,19 +3,17 @@ import { useOtherMastersQuery } from "../hooks/useOtherMastersQuery";
 import { createOtherMasterColumns } from "./OtherMaster.colums";
 import { OtherMasterHeader } from "./OtherMasterHeader";
 import { OtherMasterTable } from "./OtherMasterTable";
-
+import type { FORM_MODE } from "../types/otherMaster.types";
 import OtherMasterForm from "./OtherMasterForm";
 import { Modal } from "./Modal";
 import { mapRowToFormDefaults } from "./OtherMasterForm.mapper";
 import type { OtherMasterEntity } from "../schemas";
 
-type Mode = "Create" | "View" | "Edit" | "Delete";
-
 const OtherMasterPage = () => {
   const subscID = 1;
   const { data = [], isLoading } = useOtherMastersQuery(subscID);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [formMode, setFormMode] = useState<Mode>("View");
+  const [formMode, setFormMode] = useState<FORM_MODE>("View");
 
   const [selectedRow, setSelectedRow] = useState<OtherMasterEntity | null>(
     null,

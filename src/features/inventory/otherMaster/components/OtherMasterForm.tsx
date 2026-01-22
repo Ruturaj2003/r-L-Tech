@@ -13,7 +13,7 @@ import {
   type UpsertOtherMasterRequest,
 } from "../schemas";
 import { useUpsertOtherMasterMutation } from "../hooks/useOtherMasterMutations";
-
+import type { FORM_MODE } from "../types/otherMaster.types";
 export type defaultValues = {
   masterType: string;
   masterName: string;
@@ -22,7 +22,7 @@ export type defaultValues = {
 };
 
 interface OtherMasterFormProps {
-  mode: "Create" | "View" | "Edit" | "Delete";
+  mode: FORM_MODE;
   setModalClose?: () => void;
   defaultValues: defaultValues;
 }
@@ -70,6 +70,7 @@ export default function OtherMasterForm({
       isSubmitting={isSubmitting}
       submitLabel="Save Master"
       setModalClose={setModalClose}
+      mode={mode}
     >
       {/* NOW YOU DESIGN YOUR LAYOUT HOWEVER YOU WANT */}
       <div className="grid grid-cols-2 gap-x-2 justify-between">
@@ -82,7 +83,7 @@ export default function OtherMasterForm({
           <ControlledInput
             name="masterType"
             register={register}
-            disabled={mode === "View"}
+            disabled={mode === "View" || mode === "Delete"}
             error={errors.masterType?.message}
             placeholder="Enter master type"
           />
@@ -95,7 +96,7 @@ export default function OtherMasterForm({
           error={errors.masterName?.message}
         >
           <ControlledInput
-            disabled={mode === "View"}
+            disabled={mode === "View" || mode === "Delete"}
             className=""
             name="masterName"
             register={register}
@@ -112,7 +113,7 @@ export default function OtherMasterForm({
         error={errors.lockStatus?.message}
       >
         <ControlledSelect
-          disabled={mode === "View"}
+          disabled={mode === "View" || mode === "Delete"}
           name="lockStatus"
           options={[
             { label: "No", value: "N" },
