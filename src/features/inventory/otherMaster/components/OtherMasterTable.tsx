@@ -14,13 +14,13 @@ import type {
   PaginationState,
 } from "@tanstack/react-table";
 
-import type { OtherMaster } from "../schemas";
+import type { OtherMasterEntity } from "../schemas";
 import { ChevronDown, ChevronUp, Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface OtherMasterTableProps {
-  columnData: ColumnDef<OtherMaster>[];
-  data: OtherMaster[];
+  columnData: ColumnDef<OtherMasterEntity>[];
+  data: OtherMasterEntity[];
   isLoading: boolean;
   globalFilter: string;
   setGlobalFilter: (value: string) => void;
