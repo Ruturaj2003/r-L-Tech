@@ -42,22 +42,22 @@ export default function OtherMasterForm() {
 
   return (
     <FormContainer
-      className="w-full"
       title="Other Master"
       onSubmit={handleSubmit(onSubmit)}
       isSubmitting={isSubmitting}
       submitLabel="Save Master"
     >
       {/* NOW YOU DESIGN YOUR LAYOUT HOWEVER YOU WANT */}
-      <div className="grid grid-cols-2 gap-x-2 justify-between">
+      <div className="grid grid-cols-4 gap-x-2 justify-between">
         <FormField
           label="Master Type"
           name="masterType"
           required
           error={errors.masterType?.message}
+          className="col-span-3"
         >
           <ControlledInput
-            className="bg-amber-400 w-fit"
+            className="bg-amber-400 w-full"
             name="masterType"
             register={register}
             error={errors.masterType?.message}
@@ -72,6 +72,7 @@ export default function OtherMasterForm() {
           error={errors.masterName?.message}
         >
           <ControlledInput
+            className=""
             name="masterName"
             register={register}
             error={errors.masterName?.message}

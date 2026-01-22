@@ -6,6 +6,7 @@ interface FormFieldProps {
   required?: boolean;
   error?: string;
   children: React.ReactNode;
+  className?: string;
 }
 
 export const FormField = ({
@@ -14,9 +15,10 @@ export const FormField = ({
   name,
   error,
   required,
+  className = "space-y-2",
 }: FormFieldProps) => {
   return (
-    <div className="space-y-2">
+    <div className={className}>
       <Label htmlFor={name}>
         {label}
         {required && <span className="text-muted-foreground"> *</span>}
