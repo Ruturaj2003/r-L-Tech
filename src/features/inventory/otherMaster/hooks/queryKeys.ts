@@ -5,8 +5,7 @@
 
 export const otherMasterQueryKeys = {
   all: ["otherMaster"] as const,
-  list: (subscID: number) =>
-    [...otherMasterQueryKeys.all, "list", subscID] as const,
+  list: () => [...otherMasterQueryKeys.all, "list"] as const,
   detail: (mTransNo: number) => [
     ...otherMasterQueryKeys.all,
     "detail",

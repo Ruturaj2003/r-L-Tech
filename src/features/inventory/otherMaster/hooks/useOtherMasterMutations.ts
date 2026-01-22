@@ -21,7 +21,7 @@ import type {
  * - Payload must strictly match backend contract
  * - Insert vs Update is controlled by `status` field
  */
-export function useUpsertOtherMasterMutation(subscID: number) {
+export function useUpsertOtherMasterMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -29,7 +29,7 @@ export function useUpsertOtherMasterMutation(subscID: number) {
       otherMasterApi.upsert(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: otherMasterQueryKeys.list(subscID),
+        queryKey: otherMasterQueryKeys.list(),
       });
     },
   });
@@ -48,7 +48,7 @@ export function useUpsertOtherMasterMutation(subscID: number) {
  * Notes:
  * - Delete reason is mandatory and audited
  */
-export function useDeleteOtherMasterMutation(subscID: number) {
+export function useDeleteOtherMasterMutation() {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -56,7 +56,7 @@ export function useDeleteOtherMasterMutation(subscID: number) {
       otherMasterApi.delete(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: otherMasterQueryKeys.list(subscID),
+        queryKey: otherMasterQueryKeys.list(),
       });
     },
   });

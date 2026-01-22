@@ -4,11 +4,11 @@
  */
 import { useQuery } from "@tanstack/react-query";
 import { otherMasterApi } from "../services/otherMasterApi";
-import type { OtherMaster } from "../schemas";
+import type { OtherMasterEntity } from "../schemas";
 import { otherMasterQueryKeys } from "./queryKeys";
 
 export function useOtherMasterQuery(mTransNo: number) {
-  return useQuery<OtherMaster>({
+  return useQuery<OtherMasterEntity>({
     queryKey: otherMasterQueryKeys.detail(mTransNo),
     queryFn: () => otherMasterApi.getById(mTransNo),
     enabled: mTransNo > 0,

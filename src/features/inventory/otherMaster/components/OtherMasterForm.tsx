@@ -1,6 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import z from "zod";
 import { FormContainer } from "./FormContainer";
 import { FormField } from "./FormField";
 import {
@@ -8,17 +7,18 @@ import {
   ControlledSelect,
   ControlledTextarea,
 } from "./ControlledInput";
+import {
+  OtherMasterFormSchema,
+  type OtherMasterFormData,
+  type UpsertOtherMasterRequest,
+} from "../schemas";
+import { useUpsertOtherMasterMutation } from "../hooks/useOtherMasterMutations";
 
-const OtherMasterFormSchema = z.object({
-  masterType: z.string().min(1, "Master Type is Not weast"),
-  masterName: z.string().min(1, "Master Name is required"),
-  lockStatus: z.enum(["Y", "N"]),
-  deleteReason: z.string().optional(),
-});
+interface OtherMasterFormProps {
+  mode: "View" | "Edit" | "Delete" | "Create";
+}
 
-type OtherMasterFormData = z.infer<typeof OtherMasterFormSchema>;
-
-export default function OtherMasterForm() {
+export default function OtherMasterForm({ mode }: OtherMasterFormProps) {
   const {
     register,
     handleSubmit,
@@ -34,9 +34,24 @@ export default function OtherMasterForm() {
     },
   });
 
+  const upsertOtherMaster = useUpsertOtherMasterMutation();
+
   const onSubmit = async (data: OtherMasterFormData) => {
+    if (mode === "Create") {
+      const payload: UpsertOtherMasterRequest = {
+        createdBy: 1,
+        createdOn: new Date().toISOString(),
+        mCount: 0,
+        subscID: 1,
+        mTransNo: 0,
+        systemIP: "0.0.00",
+        status: "Insert",
+        ...data,
+      };
+      await upsertOtherMaster.mutate(payload);
+    }
     console.log("Form submitted:", data);
-    // Your mutation logic here
+
     await new Promise((resolve) => setTimeout(resolve, 1000));
   };
 
@@ -48,16 +63,14 @@ export default function OtherMasterForm() {
       submitLabel="Save Master"
     >
       {/* NOW YOU DESIGN YOUR LAYOUT HOWEVER YOU WANT */}
-      <div className="grid grid-cols-4 gap-x-2 justify-between">
+      <div className="grid grid-cols-2 gap-x-2 justify-between">
         <FormField
           label="Master Type"
           name="masterType"
           required
           error={errors.masterType?.message}
-          className="col-span-3"
         >
           <ControlledInput
-            className="bg-amber-400 w-full"
             name="masterType"
             register={register}
             error={errors.masterType?.message}
@@ -112,9 +125,15 @@ export default function OtherMasterForm() {
           rows={4}
         />
       </FormField>
+    </FormContainer>
+  );
+}
 
-      {/* Example: Custom two-column layout */}
-      {/* 
+{
+  /* Example: Custom two-column layout */
+}
+{
+  /* 
       <div className="grid grid-cols-2 gap-4">
         <FormField label="Field 1" name="field1">
           <ControlledInput name="field1" register={register} />
@@ -123,7 +142,5 @@ export default function OtherMasterForm() {
           <ControlledInput name="field2" register={register} />
         </FormField>
       </div>
-      */}
-    </FormContainer>
-  );
+      */
 }

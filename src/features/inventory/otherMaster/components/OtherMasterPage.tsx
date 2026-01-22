@@ -3,6 +3,7 @@ import { useOtherMastersQuery } from "../hooks/useOtherMastersQuery";
 import { otherMasterColumns } from "./OtherMaster.colums";
 import { OtherMasterHeader } from "./OtherMasterHeader";
 import { OtherMasterTable } from "./OtherMasterTable";
+
 import OtherMasterForm from "./OtherMasterForm";
 
 const OtherMasterPage = () => {
@@ -14,13 +15,13 @@ const OtherMasterPage = () => {
   const [globalFilter, setGlobalFilter] = useState("");
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full overflow-y-auto">
       <div className="flex flex-col h-full">
         <OtherMasterHeader
           globalFilter={globalFilter}
           setGlobalFilter={setGlobalFilter}
         />
-        <OtherMasterForm />
+        <OtherMasterForm mode="Create" />
 
         <div className="">
           <OtherMasterTable

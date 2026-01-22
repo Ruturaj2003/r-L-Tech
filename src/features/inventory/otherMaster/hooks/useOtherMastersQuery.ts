@@ -4,11 +4,11 @@ import { otherMasterApi } from "@/features/inventory/otherMaster/services/otherM
 
 import { otherMasterQueryKeys } from "@/features/inventory/otherMaster/hooks/queryKeys";
 
-import type { OtherMaster } from "@/features/inventory/otherMaster/schemas";
+import type { OtherMasterEntity } from "@/features/inventory/otherMaster/schemas";
 
 export function useOtherMastersQuery(subscID: number) {
-  return useQuery<OtherMaster[]>({
-    queryKey: otherMasterQueryKeys.list(subscID),
+  return useQuery<OtherMasterEntity[]>({
+    queryKey: otherMasterQueryKeys.list(),
     queryFn: () => otherMasterApi.getList(subscID),
     // enabled:  It will call the api with only valid data
     enabled: subscID > 0,
