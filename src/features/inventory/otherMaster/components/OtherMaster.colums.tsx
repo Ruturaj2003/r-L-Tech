@@ -1,9 +1,9 @@
 import type { ColumnDef } from "@tanstack/react-table";
 
-import type { OtherMaster } from "../schemas";
+import type { OtherMasterEntity } from "../schemas";
 import { Eye, Pencil, Trash } from "lucide-react";
 
-export const otherMasterColumns: ColumnDef<OtherMaster>[] = [
+export const otherMasterColumns: ColumnDef<OtherMasterEntity>[] = [
   {
     id: "sl",
     header: "SL",
