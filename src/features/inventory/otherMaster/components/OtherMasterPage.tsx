@@ -1,16 +1,29 @@
 import { useState } from "react";
 import { useOtherMastersQuery } from "../hooks/useOtherMastersQuery";
-import { otherMasterColumns } from "./OtherMaster.colums";
+import { createOtherMasterColumns } from "./OtherMaster.colums";
 import { OtherMasterHeader } from "./OtherMasterHeader";
 import { OtherMasterTable } from "./OtherMasterTable";
 
 import OtherMasterForm from "./OtherMasterForm";
+import { Modal } from "./Modal";
 
 const OtherMasterPage = () => {
   const subscID = 1;
   const { data = [], isLoading } = useOtherMastersQuery(subscID);
-  const columnData = otherMasterColumns;
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const columns = createOtherMasterColumns({
+    onView: () => {
+      // console.log("VIEW", row);
+      setIsModalOpen(true);
+    },
+    onEdit: () => {
+      // setEditRow(row);
+      // setEditModalOpen(true);
+    },
+    onDelete: () => {
+      // setDeleteTarget(row);
+    },
+  });
   // Global filter state
   const [globalFilter, setGlobalFilter] = useState("");
 
@@ -20,12 +33,23 @@ const OtherMasterPage = () => {
         <OtherMasterHeader
           globalFilter={globalFilter}
           setGlobalFilter={setGlobalFilter}
+          setModalOpen={() => {
+            setIsModalOpen(true);
+          }}
         />
-        <OtherMasterForm mode="Create" />
+        <Modal open={isModalOpen}>
+          <OtherMasterForm
+            mode="Create"
+            setModalClose={() => setIsModalOpen(false)}
+          />
+        </Modal>
 
         <div className="">
           <OtherMasterTable
-            columnData={columnData}
+            setModalOpen={() => {
+              setIsModalOpen(true);
+            }}
+            columnData={columns}
             data={data}
             isLoading={isLoading}
             globalFilter={globalFilter}

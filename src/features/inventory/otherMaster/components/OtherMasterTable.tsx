@@ -24,6 +24,7 @@ interface OtherMasterTableProps {
   isLoading: boolean;
   globalFilter: string;
   setGlobalFilter: (value: string) => void;
+  setModalOpen: () => void;
 }
 
 export const OtherMasterTable = ({
@@ -32,6 +33,7 @@ export const OtherMasterTable = ({
   columnData,
   globalFilter,
   setGlobalFilter,
+  setModalOpen,
 }: OtherMasterTableProps) => {
   /* -----------------------------
      TanStack controlled state

@@ -16,9 +16,13 @@ import { useUpsertOtherMasterMutation } from "../hooks/useOtherMasterMutations";
 
 interface OtherMasterFormProps {
   mode: "View" | "Edit" | "Delete" | "Create";
+  setModalClose?: () => void;
 }
 
-export default function OtherMasterForm({ mode }: OtherMasterFormProps) {
+export default function OtherMasterForm({
+  mode,
+  setModalClose,
+}: OtherMasterFormProps) {
   const {
     register,
     handleSubmit,
@@ -61,6 +65,7 @@ export default function OtherMasterForm({ mode }: OtherMasterFormProps) {
       onSubmit={handleSubmit(onSubmit)}
       isSubmitting={isSubmitting}
       submitLabel="Save Master"
+      setModalClose={setModalClose}
     >
       {/* NOW YOU DESIGN YOUR LAYOUT HOWEVER YOU WANT */}
       <div className="grid grid-cols-2 gap-x-2 justify-between">

@@ -14,6 +14,7 @@ interface FormContainerProps {
   submitLabel?: string;
   children: React.ReactNode;
   className?: string;
+  setModalClose?: () => void;
 }
 
 export const FormContainer = ({
@@ -23,6 +24,7 @@ export const FormContainer = ({
   submitLabel = "Save",
   children,
   className = "max-w-xl",
+  setModalClose,
 }: FormContainerProps) => {
   return (
     <Card className={className}>
@@ -31,10 +33,18 @@ export const FormContainer = ({
       </CardHeader>
       <div onSubmit={onSubmit}>
         <CardContent className="space-y-6">{children}</CardContent>
-        <CardFooter className="flex justify-end">
-          <Button type="submit" disabled={isSubmitting} onClick={onSubmit}>
-            {isSubmitting ? "Saving..." : submitLabel}
-          </Button>
+        <CardFooter className="flex justify-end mt-2">
+          <div className="flex gap-x-2 justify-between">
+            {setModalClose && (
+              <Button onClick={setModalClose} variant={"outline"}>
+                Close
+              </Button>
+            )}
+
+            <Button type="submit" disabled={isSubmitting} onClick={onSubmit}>
+              {isSubmitting ? "Saving..." : submitLabel}
+            </Button>
+          </div>
         </CardFooter>
       </div>
     </Card>

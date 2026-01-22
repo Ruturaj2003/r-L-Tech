@@ -4,11 +4,13 @@ import { Search, X } from "lucide-react";
 interface OtherMasterHeaderProps {
   globalFilter: string;
   setGlobalFilter: (value: string) => void;
+  setModalOpen: () => void;
 }
 
 export const OtherMasterHeader = ({
   globalFilter,
   setGlobalFilter,
+  setModalOpen,
 }: OtherMasterHeaderProps) => {
   return (
     <div className="border-b border-border px-4 lg:py-4 pb-1">
@@ -62,7 +64,9 @@ export const OtherMasterHeader = ({
           </div>
 
           {/* Add Button */}
-          <Button className="w-full sm:w-auto">Add +</Button>
+          <Button onClick={setModalOpen} className="w-full sm:w-auto">
+            Add +
+          </Button>
         </div>
       </div>
     </div>
