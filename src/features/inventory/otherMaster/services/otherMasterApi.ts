@@ -2,38 +2,45 @@ import type { AxiosResponse } from "axios";
 import { apiClient } from "@/services/apiClient";
 
 import {
-  OtherMasterSchema,
-  SaveOtherMasterSchema,
-  DeleteOtherMasterSchema,
-  MasterTypeSchema,
-  DeleteReasonSchema,
+  OtherMasterEntitySchema,
+  // UpsertOtherMasterRequestSchema,
+  // DeleteOtherMasterRequestSchema,
+  OtherMasterTypeOptionSchema,
+  OtherMasterDeleteReasonOptionSchema,
 } from "../schemas";
-
+import type {
+  OtherMasterEntity,
+  OtherMasterTypeOption,
+  OtherMasterDeleteReasonOption,
+} from "../schemas";
 import {
-  type OtherMaster,
-  type SaveOtherMaster,
-  type DeleteOtherMaster,
-  type MasterType,
-  type DeleteReason,
-} from "../schemas";
+  DeleteOtherMasterRequestSchema,
+  UpsertOtherMasterRequestSchema,
+  type DeleteOtherMasterRequest,
+  type UpsertOtherMasterRequest,
+} from "../schemas/otherMasterForm.schema";
+
+/* ------------------------------------------------------------------ */
+/*                         Internal Utilities                          */
+/* ------------------------------------------------------------------ */
 
 /**
- * Checks whether a value is a non-null object.
- * Used for safely inspecting API responses.
+ * Narrowing helper to check for plain objects.
+ * Used only for defensive API response handling.
  */
 function isObject(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
 }
 
 /**
- * Extracts an array from an API response.
- * Handles cases where data is returned directly
- * or wrapped inside a `data` property.
+ * Extracts an array from common API response shapes.
+ *
+ * Supported formats:
+ * - []
+ * - { data: [] }
  */
 function extractArray(data: unknown): unknown[] {
-  if (Array.isArray(data)) {
-    return data;
-  }
+  if (Array.isArray(data)) return data;
 
   if (isObject(data) && Array.isArray(data.data)) {
     return data.data;
@@ -42,63 +49,78 @@ function extractArray(data: unknown): unknown[] {
   return [];
 }
 
+/* ------------------------------------------------------------------ */
+/*                           API Service                               */
+/* ------------------------------------------------------------------ */
+
 /**
- * API methods for Other Master operations.
+ * Other Master API service
+ *
+ * Boundary:
+ * - All network communication for Other Master domain
+ *
+ * Rules:
+ * - All inputs validated via Zod before request
+ * - All outputs validated via Zod after response
+ * - No UI logic or state handling
  */
 export const otherMasterApi = {
   /**
-   * Fetches the list of Other Master records for a subscription.
+   * Fetch Other Master records for a subscription.
    *
-   * @param subscID - Subscription ID
-   * @returns List of validated OtherMaster records
+   * Boundary:
+   * - API read (list)
    */
-  async getList(SubscID: number): Promise<OtherMaster[]> {
+  async getList(subscID: number): Promise<OtherMasterEntity[]> {
     const response: AxiosResponse<unknown> = await apiClient.get(
       "/api/OtherMasters/api/GetData/list",
       {
-        params: { SubscID },
+        params: { SubscID: subscID },
       },
     );
 
     const rawList = extractArray(response.data);
-    return rawList.map((item) => OtherMasterSchema.parse(item));
+    return rawList.map((item) => OtherMasterEntitySchema.parse(item));
   },
 
   /**
-   * Fetches a single Other Master record by transaction number.
+   * Fetch a single Other Master record by transaction number.
    *
-   * @param mTransNo - Master transaction number
-   * @returns Validated OtherMaster record
+   * Boundary:
+   * - API read (detail)
    */
-  async getById(mTransNo: number): Promise<OtherMaster> {
+  async getById(mTransNo: number): Promise<OtherMasterEntity> {
     const response: AxiosResponse<unknown> = await apiClient.get(
       `/api/OtherMasters/api/GetData/${mTransNo}`,
     );
 
-    return OtherMasterSchema.parse(response.data);
+    return OtherMasterEntitySchema.parse(response.data);
   },
 
   /**
-   * Fetches available master types for dropdown usage.
+   * Fetch master type lookup values.
    *
-   * @returns List of master type dropdown values
+   * Boundary:
+   * - API lookup (reference data)
    */
-  async getMasterTypes(): Promise<MasterType[]> {
+  async getMasterTypeOptions(): Promise<OtherMasterTypeOption[]> {
     const response: AxiosResponse<unknown> = await apiClient.get(
       "/api/OtherMasters/api/GetMasterType",
     );
 
     const rawList = extractArray(response.data);
-    return rawList.map((item) => MasterTypeSchema.parse(item));
+    return rawList.map((item) => OtherMasterTypeOptionSchema.parse(item));
   },
 
   /**
-   * Fetches delete reasons for a subscription.
+   * Fetch delete reason lookup values for a subscription.
    *
-   * @param subscID - Subscription ID
-   * @returns List of delete reason dropdown values
+   * Boundary:
+   * - API lookup (reference data)
    */
-  async getDeleteReasons(subscID: number): Promise<DeleteReason[]> {
+  async getDeleteReasonOptions(
+    subscID: number,
+  ): Promise<OtherMasterDeleteReasonOption[]> {
     const response: AxiosResponse<unknown> = await apiClient.get(
       "/api/OtherMasters/api/GetData/Load",
       {
@@ -110,17 +132,23 @@ export const otherMasterApi = {
     );
 
     const rawList = extractArray(response.data);
-    return rawList.map((item) => DeleteReasonSchema.parse(item));
+    return rawList.map((item) =>
+      OtherMasterDeleteReasonOptionSchema.parse(item),
+    );
   },
 
   /**
-   * Saves (insert or update) an Other Master record.
+   * Insert or update an Other Master record.
    *
-   * @param payload - Data to save
-   * @returns Server response message
+   * Boundary:
+   * - API mutation (upsert)
+   *
+   * Notes:
+   * - Insert vs Update is controlled by `status` field
+   * - Payload is validated before submission
    */
-  async save(payload: SaveOtherMaster): Promise<string> {
-    const validatedPayload = SaveOtherMasterSchema.parse(payload);
+  async upsert(payload: UpsertOtherMasterRequest): Promise<string> {
+    const validatedPayload = UpsertOtherMasterRequestSchema.parse(payload);
 
     const response: AxiosResponse<unknown> = await apiClient.post(
       "/api/OtherMasters/api/SaveData",
@@ -128,19 +156,24 @@ export const otherMasterApi = {
     );
 
     if (typeof response.data !== "string") {
-      throw new Error("Invalid save response from server");
+      throw new Error("Invalid upsert response from server");
     }
 
     return response.data;
   },
 
   /**
-   * Deletes an Other Master record.
+   * Delete an Other Master record.
    *
-   * @param payload - Delete request data
+   * Boundary:
+   * - API mutation (delete)
+   *
+   * Notes:
+   * - Delete reason is mandatory
+   * - Uses URL + query params as required by backend
    */
-  async delete(payload: DeleteOtherMaster): Promise<void> {
-    const validated = DeleteOtherMasterSchema.parse(payload);
+  async delete(payload: DeleteOtherMasterRequest): Promise<void> {
+    const validated = DeleteOtherMasterRequestSchema.parse(payload);
 
     await apiClient.delete(
       `/api/OtherMasters/api/DeleteData/${validated.mTransNo}`,

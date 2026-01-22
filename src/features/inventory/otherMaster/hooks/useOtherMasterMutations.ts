@@ -1,36 +1,63 @@
-/**
- * React Query hook for saving and deleting Other Master records.
- * Automatically refreshes the related list after a successful mutation.
- */
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { otherMasterApi } from "../services/otherMasterApi";
 import { otherMasterQueryKeys } from "./queryKeys";
 
-import type { SaveOtherMaster, DeleteOtherMaster } from "../schemas";
+import type {
+  UpsertOtherMasterRequest,
+  DeleteOtherMasterRequest,
+} from "../schemas/otherMasterForm.schema";
 
-export function useOtherMasterMutation(subscID: number) {
+/**
+ * React Query mutation hook for inserting or updating
+ * Other Master records.
+ *
+ * Boundary:
+ * - API mutation (Upsert)
+ *
+ * Side Effects:
+ * - Invalidates Other Master list query on success
+ *
+ * Notes:
+ * - Payload must strictly match backend contract
+ * - Insert vs Update is controlled by `status` field
+ */
+export function useUpsertOtherMasterMutation(subscID: number) {
   const queryClient = useQueryClient();
 
-  const saveMutation = useMutation({
-    mutationFn: (payload: SaveOtherMaster) => otherMasterApi.save(payload),
+  return useMutation({
+    mutationFn: (payload: UpsertOtherMasterRequest) =>
+      otherMasterApi.upsert(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: otherMasterQueryKeys.list(subscID),
       });
     },
   });
+}
 
-  const deleteMutation = useMutation({
-    mutationFn: (payload: DeleteOtherMaster) => otherMasterApi.delete(payload),
+/**
+ * React Query mutation hook for deleting
+ * an Other Master record.
+ *
+ * Boundary:
+ * - API mutation (Delete)
+ *
+ * Side Effects:
+ * - Invalidates Other Master list query on success
+ *
+ * Notes:
+ * - Delete reason is mandatory and audited
+ */
+export function useDeleteOtherMasterMutation(subscID: number) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (payload: DeleteOtherMasterRequest) =>
+      otherMasterApi.delete(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: otherMasterQueryKeys.list(subscID),
       });
     },
   });
-
-  return {
-    saveMutation,
-    deleteMutation,
-  };
 }

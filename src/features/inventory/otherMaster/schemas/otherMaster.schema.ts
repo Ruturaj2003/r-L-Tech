@@ -1,9 +1,16 @@
-import z from "zod";
+import { z } from "zod";
 
 /**
- * Core Other Master entity as returned by API
+ * Other Master entity schema
+ *
+ * Boundary:
+ * - API response (read operations)
+ *
+ * Purpose:
+ * - Represents a single Other Master record
+ * - Used for list/detail views
  */
-export const OtherMasterSchema = z.object({
+export const OtherMasterEntitySchema = z.object({
   mTransNo: z.number(),
   masterType: z.string().min(1),
   masterName: z.string().min(1),
@@ -11,48 +18,42 @@ export const OtherMasterSchema = z.object({
 });
 
 /**
- * Save (Insert / Update) payload
- * Mirrors backend expectations exactly
+ * Other Master Type option schema
+ *
+ * Boundary:
+ * - API response (lookup / dropdown)
+ *
+ * Purpose:
+ * - Used to populate Master Type selectors
+ * - Read-only reference data
  */
-
-export const SaveOtherMasterSchema = z.object({
-  mTransNo: z.number(),
-  mCount: z.number().default(0),
+export const OtherMasterTypeOptionSchema = z.object({
   masterType: z.string().min(1),
+});
+
+/**
+ * Other Master Delete Reason option schema
+ *
+ * Boundary:
+ * - API response (lookup)
+ *
+ * Purpose:
+ * - Used to populate delete reason selection
+ * - Contains display name tied to transaction
+ */
+export const OtherMasterDeleteReasonOptionSchema = z.object({
+  mTransNo: z.number(),
   masterName: z.string().min(1),
-  systemIP: z.string().default("0"),
-  lockStatus: z.enum(["Y", "N"]),
-  createdBy: z.number(), // from localStoreage => LogUser MTransNo
-  createdOn: z.string(), // ISO String
-  subscID: z.number(),
-  status: z.enum(["Insert", "Update"]),
 });
 
-/**
- * Delete payload (URL based)
- */
+/* ------------------------------------------------------------------ */
+/*                              Types                                 */
+/* ------------------------------------------------------------------ */
 
-export const DeleteOtherMasterSchema = z.object({
-  mTransNo: z.number(),
-  userNo: z.number(),
-  reason: z.string().min(1, "Delete reason is required"),
-});
+export type OtherMasterEntity = z.infer<typeof OtherMasterEntitySchema>;
 
-/**
- * Dropdown item schema (Master Type, Delete Reason)
- */
-export const MasterTypeSchema = z.object({
-  masterType: z.string(),
-});
+export type OtherMasterTypeOption = z.infer<typeof OtherMasterTypeOptionSchema>;
 
-export const DeleteReasonSchema = z.object({
-  mTransNo: z.number(),
-  masterName: z.string(),
-});
-
-export type OtherMaster = z.infer<typeof OtherMasterSchema>;
-export type SaveOtherMaster = z.infer<typeof SaveOtherMasterSchema>;
-export type DeleteOtherMaster = z.infer<typeof DeleteOtherMasterSchema>;
-
-export type MasterType = z.infer<typeof MasterTypeSchema>;
-export type DeleteReason = z.infer<typeof DeleteReasonSchema>;
+export type OtherMasterDeleteReasonOption = z.infer<
+  typeof OtherMasterDeleteReasonOptionSchema
+>;
