@@ -6,6 +6,8 @@ import { OtherMasterTable } from "./OtherMasterTable";
 
 import OtherMasterForm from "./OtherMasterForm";
 import { Modal } from "./Modal";
+import { mapRowToFormDefaults } from "./OtherMasterForm.mapper";
+import type { OtherMasterEntity } from "../schemas";
 
 type Mode = "Create" | "View" | "Edit" | "Delete";
 
@@ -14,20 +16,24 @@ const OtherMasterPage = () => {
   const { data = [], isLoading } = useOtherMastersQuery(subscID);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formMode, setFormMode] = useState<Mode>("View");
+
+  const [selectedRow, setSelectedRow] = useState<OtherMasterEntity | null>(
+    null,
+  );
+
   const columns = createOtherMasterColumns({
-    onView: () => {
-      // console.log("VIEW", row);
+    onView: (row: OtherMasterEntity) => {
+      setSelectedRow(row);
       setFormMode("View");
       setIsModalOpen(true);
     },
-    onEdit: () => {
-      // setEditRow(row);
-      // setEditModalOpen(true);
+    onEdit: (row: OtherMasterEntity) => {
+      setSelectedRow(row);
       setFormMode("Edit");
       setIsModalOpen(true);
     },
-    onDelete: () => {
-      // setDeleteTarget(row);
+    onDelete: (row: OtherMasterEntity) => {
+      setSelectedRow(row);
       setFormMode("Delete");
       setIsModalOpen(true);
     },
@@ -42,11 +48,14 @@ const OtherMasterPage = () => {
           globalFilter={globalFilter}
           setGlobalFilter={setGlobalFilter}
           setModalOpen={() => {
+            setSelectedRow(null);
+            setFormMode("Create");
             setIsModalOpen(true);
           }}
         />
         <Modal open={isModalOpen}>
           <OtherMasterForm
+            defaultValues={mapRowToFormDefaults(formMode, selectedRow)}
             mode={formMode}
             setModalClose={() => setIsModalOpen(false)}
           />

@@ -14,14 +14,23 @@ import {
 } from "../schemas";
 import { useUpsertOtherMasterMutation } from "../hooks/useOtherMasterMutations";
 
+export type defaultValues = {
+  masterType: string;
+  masterName: string;
+  lockStatus: "N" | "Y";
+  deleteReason?: string;
+};
+
 interface OtherMasterFormProps {
   mode: "Create" | "View" | "Edit" | "Delete";
   setModalClose?: () => void;
+  defaultValues: defaultValues;
 }
 
 export default function OtherMasterForm({
   mode,
   setModalClose,
+  defaultValues,
 }: OtherMasterFormProps) {
   const {
     register,
@@ -30,12 +39,7 @@ export default function OtherMasterForm({
     formState: { errors, isSubmitting },
   } = useForm<OtherMasterFormData>({
     resolver: zodResolver(OtherMasterFormSchema),
-    defaultValues: {
-      masterType: "",
-      masterName: "",
-      lockStatus: "N",
-      deleteReason: "",
-    },
+    defaultValues: defaultValues,
   });
 
   const upsertOtherMaster = useUpsertOtherMasterMutation();
