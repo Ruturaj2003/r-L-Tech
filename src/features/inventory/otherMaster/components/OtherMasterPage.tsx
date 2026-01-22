@@ -7,21 +7,29 @@ import { OtherMasterTable } from "./OtherMasterTable";
 import OtherMasterForm from "./OtherMasterForm";
 import { Modal } from "./Modal";
 
+type Mode = "Create" | "View" | "Edit" | "Delete";
+
 const OtherMasterPage = () => {
   const subscID = 1;
   const { data = [], isLoading } = useOtherMastersQuery(subscID);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [formMode, setFormMode] = useState<Mode>("View");
   const columns = createOtherMasterColumns({
     onView: () => {
       // console.log("VIEW", row);
+      setFormMode("View");
       setIsModalOpen(true);
     },
     onEdit: () => {
       // setEditRow(row);
       // setEditModalOpen(true);
+      setFormMode("Edit");
+      setIsModalOpen(true);
     },
     onDelete: () => {
       // setDeleteTarget(row);
+      setFormMode("Delete");
+      setIsModalOpen(true);
     },
   });
   // Global filter state
@@ -39,16 +47,13 @@ const OtherMasterPage = () => {
         />
         <Modal open={isModalOpen}>
           <OtherMasterForm
-            mode="Create"
+            mode={formMode}
             setModalClose={() => setIsModalOpen(false)}
           />
         </Modal>
 
         <div className="">
           <OtherMasterTable
-            setModalOpen={() => {
-              setIsModalOpen(true);
-            }}
             columnData={columns}
             data={data}
             isLoading={isLoading}

@@ -15,7 +15,7 @@ import {
 import { useUpsertOtherMasterMutation } from "../hooks/useOtherMasterMutations";
 
 interface OtherMasterFormProps {
-  mode: "View" | "Edit" | "Delete" | "Create";
+  mode: "Create" | "View" | "Edit" | "Delete";
   setModalClose?: () => void;
 }
 
@@ -78,6 +78,7 @@ export default function OtherMasterForm({
           <ControlledInput
             name="masterType"
             register={register}
+            disabled={mode === "View"}
             error={errors.masterType?.message}
             placeholder="Enter master type"
           />
@@ -90,6 +91,7 @@ export default function OtherMasterForm({
           error={errors.masterName?.message}
         >
           <ControlledInput
+            disabled={mode === "View"}
             className=""
             name="masterName"
             register={register}
@@ -106,6 +108,7 @@ export default function OtherMasterForm({
         error={errors.lockStatus?.message}
       >
         <ControlledSelect
+          disabled={mode === "View"}
           name="lockStatus"
           options={[
             { label: "No", value: "N" },
@@ -117,19 +120,21 @@ export default function OtherMasterForm({
         />
       </FormField>
 
-      <FormField
-        label="Delete Reason"
-        name="deleteReason"
-        error={errors.deleteReason?.message}
-      >
-        <ControlledTextarea
+      {mode === "Delete" && (
+        <FormField
+          label="Delete Reason"
           name="deleteReason"
-          register={register}
           error={errors.deleteReason?.message}
-          placeholder="Optional: Explain why this master was deleted"
-          rows={4}
-        />
-      </FormField>
+        >
+          <ControlledTextarea
+            name="deleteReason"
+            register={register}
+            error={errors.deleteReason?.message}
+            placeholder="Optional: Explain why this master was deleted"
+            rows={4}
+          />
+        </FormField>
+      )}
     </FormContainer>
   );
 }
