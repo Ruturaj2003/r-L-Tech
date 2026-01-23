@@ -88,6 +88,23 @@ const OtherMasterPage = () => {
 
     if (formMode === "Edit") {
       // update payload
+      // Extract the hidden Fields which are not shown in form here
+      // The ! tells type script that I knows its there
+      const hiddenData = selectedRow;
+
+      const payload: UpsertOtherMasterRequest = {
+        createdBy: 1,
+        createdOn: new Date().toISOString(),
+        mCount: 0,
+        subscID,
+        mTransNo: hiddenData!.mTransNo,
+        systemIP: "0.0.00",
+        status: "Update",
+        ...data,
+      };
+      console.log("Craete FN run");
+
+      await upsertOtherMaster.mutateAsync(payload);
     }
 
     if (formMode === "Delete") {
