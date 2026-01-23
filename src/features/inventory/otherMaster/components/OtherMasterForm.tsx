@@ -24,21 +24,11 @@ import type {
 import { useEffect } from "react";
 
 // -------------------------------------
-// Types – Form Defaults
-// -------------------------------------
-export type DefaultValues = {
-  masterType: string;
-  masterName: string;
-  lockStatus: "N" | "Y";
-  deleteReason?: string;
-};
-
-// -------------------------------------
 // Props
 // -------------------------------------
 interface OtherMasterFormProps {
   mode: FORM_MODE;
-  defaultValues: DefaultValues;
+  defaultValues: OtherMasterFormData;
   onSubmit: (data: OtherMasterFormData) => Promise<void>;
   setModalClose?: () => void;
 
@@ -71,12 +61,10 @@ export default function OtherMasterForm({
   });
   useEffect(() => {
     reset(defaultValues);
-  }, [defaultValues, reset]);
+  }, [defaultValues, reset, mode]);
   const onInvalid = (errors: unknown) => {
     console.log("FORM ERRORS", errors);
   };
-
-  console.log(defaultValues);
 
   return (
     <FormContainer
@@ -109,7 +97,7 @@ export default function OtherMasterForm({
               })) ?? []
             }
             control={control}
-            error={errors.lockStatus?.message}
+            error={errors.masterType?.message}
           />
         </FormField>
 

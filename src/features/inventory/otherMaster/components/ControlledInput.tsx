@@ -4,7 +4,6 @@ import type {
   UseFormRegister,
   Control,
 } from "react-hook-form";
-
 import { Controller } from "react-hook-form";
 
 import { Input } from "@/components/ui/input";
@@ -18,7 +17,7 @@ import {
 } from "@/components/ui/select";
 
 /* ============================================================================
- * 1. CONTROLLED INPUT (text, number, email, password, date, etc.)
+ * 1. CONTROLLED INPUT (native inputs via register)
  * ========================================================================== */
 
 export interface ControlledInputProps<T extends FieldValues> {
@@ -42,19 +41,19 @@ export function ControlledInput<T extends FieldValues>({
 }: ControlledInputProps<T>) {
   return (
     <Input
-      className={className}
       id={name}
       type={type}
       placeholder={placeholder}
       disabled={disabled}
       aria-invalid={!!error}
+      className={className}
       {...register(name)}
     />
   );
 }
 
 /* ============================================================================
- * 2. CONTROLLED TEXTAREA
+ * 2. CONTROLLED TEXTAREA (native textarea via register)
  * ========================================================================== */
 
 export interface ControlledTextareaProps<T extends FieldValues> {
@@ -87,8 +86,9 @@ export function ControlledTextarea<T extends FieldValues>({
 }
 
 /* ============================================================================
- * 3. CONTROLLED SELECT (shadcn)
+ * 3. CONTROLLED SELECT (Radix / shadcn via Controller)
  * ========================================================================== */
+
 export interface SelectOption<V extends string = string> {
   label: string;
   value: V;
@@ -107,9 +107,6 @@ export interface ControlledSelectProps<
   className?: string;
 }
 
-// -------------------------------------
-// Component
-// -------------------------------------
 export function ControlledSelect<
   T extends FieldValues,
   V extends string = string,
@@ -132,7 +129,11 @@ export function ControlledSelect<
           onValueChange={field.onChange}
           disabled={disabled}
         >
-          <SelectTrigger className={className} aria-invalid={!!error}>
+          <SelectTrigger
+            ref={field.ref}
+            className={className}
+            aria-invalid={!!error}
+          >
             <SelectValue placeholder={placeholder} />
           </SelectTrigger>
 
@@ -148,8 +149,9 @@ export function ControlledSelect<
     />
   );
 }
+
 /* ============================================================================
- * 4. CONTROLLED DATE (HTML date input, RHF-safe)
+ * 4. CONTROLLED DATE (native date input via register)
  * ========================================================================== */
 
 export interface ControlledDateProps<T extends FieldValues> {
@@ -175,41 +177,3 @@ export function ControlledDate<T extends FieldValues>({
     />
   );
 }
-
-// USAGE:
-// type LoginFormValues = {
-//   email: string;
-//   password: string;
-//   role: "admin" | "user";
-//   notes: string;
-//   joinDate: string;
-// };
-
-// <ControlledInput<LoginFormValues>
-//   name="email"
-//   type="email"
-//   register={register}
-//   error={errors.email?.message}
-// />
-
-// <ControlledTextarea<LoginFormValues>
-//   name="notes"
-//   register={register}
-//   error={errors.notes?.message}
-// />
-
-// <ControlledSelect<LoginFormValues, "admin" | "user">
-//   name="role"
-//   options={[
-//     { label: "Admin", value: "admin" },
-//     { label: "User", value: "user" },
-//   ]}
-//   setValue={setValue}
-//   error={errors.role?.message}
-// />
-
-// <ControlledDate<LoginFormValues>
-//   name="joinDate"
-//   register={register}
-//   error={errors.joinDate?.message}
-// />
