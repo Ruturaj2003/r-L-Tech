@@ -17,7 +17,7 @@ export function mapRowToFormDefaults(
 ): OtherMasterFormData {
   if (mode === "Create") return EMPTY_DEFAULTS;
   if (!row) return EMPTY_DEFAULTS;
-
+  console.log(row);
   return {
     masterType: row.masterType,
     masterName: row.masterName,

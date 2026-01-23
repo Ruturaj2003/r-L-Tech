@@ -21,6 +21,7 @@ import type {
   FORM_MODE,
   MasterTypeOption,
 } from "../types/otherMaster.types";
+import { useEffect } from "react";
 
 // -------------------------------------
 // Types – Form Defaults
@@ -60,15 +61,22 @@ export default function OtherMasterForm({
   const {
     register,
     handleSubmit,
-    setValue,
+
+    reset,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<OtherMasterFormData>({
     resolver: zodResolver(getOtherMasterFormSchema(mode)),
     defaultValues,
   });
+  useEffect(() => {
+    reset(defaultValues);
+  }, [defaultValues, reset]);
   const onInvalid = (errors: unknown) => {
     console.log("FORM ERRORS", errors);
   };
+
+  console.log(defaultValues);
 
   return (
     <FormContainer
@@ -100,9 +108,8 @@ export default function OtherMasterForm({
                 value: masterType.masterType,
               })) ?? []
             }
-            setValue={setValue}
+            control={control}
             error={errors.lockStatus?.message}
-            defaultValue="N"
           />
         </FormField>
 
@@ -138,9 +145,8 @@ export default function OtherMasterForm({
             { label: "No", value: "N" },
             { label: "Yes", value: "Y" },
           ]}
-          setValue={setValue}
+          control={control}
           error={errors.lockStatus?.message}
-          defaultValue="N"
         />
       </FormField>
 
@@ -162,7 +168,7 @@ export default function OtherMasterForm({
                 value: String(reason.mTransNo),
               })) ?? []
             }
-            setValue={setValue}
+            control={control}
             error={errors.deleteReason?.message}
             placeholder="Select delete reason"
           />

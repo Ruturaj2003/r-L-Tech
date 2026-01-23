@@ -2,8 +2,10 @@ import type {
   FieldValues,
   Path,
   UseFormRegister,
-  UseFormSetValue,
+  Control,
 } from "react-hook-form";
+
+import { Controller } from "react-hook-form";
 
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -87,7 +89,6 @@ export function ControlledTextarea<T extends FieldValues>({
 /* ============================================================================
  * 3. CONTROLLED SELECT (shadcn)
  * ========================================================================== */
-
 export interface SelectOption<V extends string = string> {
   label: string;
   value: V;
@@ -98,53 +99,55 @@ export interface ControlledSelectProps<
   V extends string = string,
 > {
   name: Path<T>;
+  control: Control<T>;
   options: readonly SelectOption<V>[];
-  setValue: UseFormSetValue<T>;
   error?: string;
-  defaultValue?: V;
   placeholder?: string;
   disabled?: boolean;
   className?: string;
 }
 
+// -------------------------------------
+// Component
+// -------------------------------------
 export function ControlledSelect<
   T extends FieldValues,
   V extends string = string,
 >({
   name,
+  control,
   options,
-  setValue,
   error,
-  defaultValue,
   placeholder = "Select an option",
   disabled = false,
   className = "",
 }: ControlledSelectProps<T, V>) {
   return (
-    <Select
-      defaultValue={defaultValue}
-      disabled={disabled}
-      onValueChange={(value) =>
-        setValue(name, value as T[Path<T>], {
-          shouldValidate: true,
-        })
-      }
-    >
-      <SelectTrigger className={className} aria-invalid={!!error}>
-        <SelectValue placeholder={placeholder} />
-      </SelectTrigger>
+    <Controller
+      name={name}
+      control={control}
+      render={({ field }) => (
+        <Select
+          value={field.value ?? ""}
+          onValueChange={field.onChange}
+          disabled={disabled}
+        >
+          <SelectTrigger className={className} aria-invalid={!!error}>
+            <SelectValue placeholder={placeholder} />
+          </SelectTrigger>
 
-      <SelectContent>
-        {options.map((opt) => (
-          <SelectItem key={opt.value} value={opt.value}>
-            {opt.label}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
+          <SelectContent>
+            {options.map((opt) => (
+              <SelectItem key={opt.value} value={opt.value}>
+                {opt.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      )}
+    />
   );
 }
-
 /* ============================================================================
  * 4. CONTROLLED DATE (HTML date input, RHF-safe)
  * ========================================================================== */
