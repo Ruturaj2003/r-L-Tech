@@ -87,10 +87,12 @@ export default function OtherMasterForm({
           name="masterType"
           required
           error={errors.masterType?.message}
+          className="min-w-10"
         >
           <ControlledSelect
             name="masterType"
             placeholder="Select Master Type"
+            className=" min-w-40 mt-2"
             disabled={mode === "View" || mode === "Delete"}
             options={
               masterTypeOptions?.map((masterType) => ({

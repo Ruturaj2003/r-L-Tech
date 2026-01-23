@@ -104,6 +104,7 @@ export interface ControlledSelectProps<
   defaultValue?: V;
   placeholder?: string;
   disabled?: boolean;
+  className?: string;
 }
 
 export function ControlledSelect<
@@ -117,6 +118,7 @@ export function ControlledSelect<
   defaultValue,
   placeholder = "Select an option",
   disabled = false,
+  className = "",
 }: ControlledSelectProps<T, V>) {
   return (
     <Select
@@ -128,7 +130,7 @@ export function ControlledSelect<
         })
       }
     >
-      <SelectTrigger aria-invalid={!!error}>
+      <SelectTrigger className={className} aria-invalid={!!error}>
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
 
