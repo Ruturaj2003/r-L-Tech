@@ -8,7 +8,7 @@ import type {
 export function useMasterTypesQuery() {
   return useQuery<MasterTypeOption[]>({
     queryKey: otherMasterQueryKeys.masterTypes(),
-    queryFn: () => otherMasterApi.getMasterTypes(),
+    queryFn: () => otherMasterApi.getMasterTypeOptions(),
     staleTime: Infinity,
   });
 }
@@ -16,7 +16,7 @@ export function useMasterTypesQuery() {
 export function useDeleteReasonsQuery(subscID: number) {
   return useQuery<DeleteReasonOption[]>({
     queryKey: otherMasterQueryKeys.deleteReasons(subscID),
-    queryFn: () => otherMasterApi.getDeleteReasons(subscID),
+    queryFn: () => otherMasterApi.getDeleteReasonOptions(subscID),
     enabled: subscID > 0,
     staleTime: Infinity,
   });

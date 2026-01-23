@@ -7,50 +7,86 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
+import type { FORM_MODE } from "../types/otherMaster.types";
+
 interface FormContainerProps {
   title: string;
   onSubmit: (e: React.FormEvent) => void;
   isSubmitting: boolean;
-  submitLabel?: string;
   children: React.ReactNode;
   className?: string;
   setModalClose?: () => void;
   mode: FORM_MODE;
 }
 
-import type { FORM_MODE } from "../types/otherMaster.types";
+// -------------------------------------
+// Mode → UI Configuration
+// -------------------------------------
+const MODE_UI_CONFIG: Record<
+  Exclude<FORM_MODE, "View">,
+  {
+    label: string;
+    variant: "default" | "destructive";
+  }
+> = {
+  Create: {
+    label: "Save",
+    variant: "default",
+  },
+  Edit: {
+    label: "Update",
+    variant: "default",
+  },
+  Delete: {
+    label: "Delete",
+    variant: "destructive",
+  },
+};
+
+// -------------------------------------
+// Component
+// -------------------------------------
 export const FormContainer = ({
   title,
   onSubmit,
   isSubmitting,
-  submitLabel = "Save",
   children,
   className = "max-w-xl",
   setModalClose,
   mode,
 }: FormContainerProps) => {
+  const submitConfig = mode !== "View" ? MODE_UI_CONFIG[mode] : null;
+
   return (
     <Card className={className}>
       <CardHeader>
         <CardTitle>{title}</CardTitle>
       </CardHeader>
-      <div onSubmit={onSubmit}>
+
+      {/* IMPORTANT: form wrapper for proper submit */}
+      <form onSubmit={onSubmit}>
         <CardContent className="space-y-6">{children}</CardContent>
-        <CardFooter className="flex justify-end mt-2">
-          <div className="flex gap-x-2 justify-between">
+
+        <CardFooter className="flex justify-end">
+          <div className="flex gap-x-2">
             {setModalClose && (
-              <Button onClick={setModalClose} variant={"outline"}>
+              <Button type="button" variant="secondary" onClick={setModalClose}>
                 Close
               </Button>
             )}
-            {mode !== "View" && (
-              <Button type="submit" disabled={isSubmitting} onClick={onSubmit}>
-                {isSubmitting ? "Saving..." : submitLabel}
+
+            {submitConfig && (
+              <Button
+                type="submit"
+                variant={submitConfig.variant}
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? `${submitConfig.label}...` : submitConfig.label}
               </Button>
             )}
           </div>
         </CardFooter>
-      </div>
+      </form>
     </Card>
   );
 };
