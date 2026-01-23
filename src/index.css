@@ -194,4 +194,8 @@
   body {
     @apply bg-background text-foreground;
   }
+  input,
+  textarea {
+    caret-color: var(--foreground);
+  }
 }
