@@ -7,7 +7,10 @@ import { useState } from "react";
 // Feature Hooks
 // -------------------------------------
 import { useOtherMastersQuery } from "../hooks/useOtherMastersQuery";
-import { useUpsertOtherMasterMutation } from "../hooks/useOtherMasterMutations";
+import {
+  useDeleteOtherMasterMutation,
+  useUpsertOtherMasterMutation,
+} from "../hooks/useOtherMasterMutations";
 
 // -------------------------------------
 // Feature Components
@@ -28,6 +31,7 @@ import { mapRowToFormDefaults } from "./OtherMasterForm.mapper";
 // -------------------------------------
 import type { FORM_MODE } from "../types/otherMaster.types";
 import type {
+  DeleteOtherMasterRequest,
   OtherMasterEntity,
   OtherMasterFormData,
   UpsertOtherMasterRequest,
@@ -55,7 +59,7 @@ const OtherMasterPage = () => {
   // Mutations
   // -------------------------------------
   const upsertOtherMaster = useUpsertOtherMasterMutation();
-
+  const deleteOtherMaster = useDeleteOtherMasterMutation();
   // -------------------------------------
   // UI State
   // -------------------------------------
@@ -109,6 +113,16 @@ const OtherMasterPage = () => {
 
     if (formMode === "Delete") {
       // delete payload
+      // TODO :  const UserNo = Number(
+      //   JSON.parse(localStorage.getItem("LogUser")).mTransNo,
+      // );
+      const hiddenData = selectedRow;
+      const payload: DeleteOtherMasterRequest = {
+        mTransNo: hiddenData!.mTransNo,
+        reason: data.deleteReason!,
+        userNo: 1,
+      };
+      await deleteOtherMaster.mutate(payload);
     }
 
     setIsModalOpen(false);
