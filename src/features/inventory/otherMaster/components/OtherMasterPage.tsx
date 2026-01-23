@@ -37,7 +37,10 @@ import type {
   UpsertOtherMasterRequest,
 } from "../schemas";
 
-import { useDeleteReasonsQuery } from "../hooks/useOtherMasterDropdown";
+import {
+  useDeleteReasonsQuery,
+  useMasterTypesQuery,
+} from "../hooks/useOtherMasterDropdown";
 
 // -------------------------------------
 // Page Component
@@ -53,6 +56,8 @@ const OtherMasterPage = () => {
   // Server State
   // -------------------------------------
   const { data = [], isLoading } = useOtherMastersQuery(subscID);
+  const { data: masterTypeOptions = [], isLoading: isMasterTypeLoading } =
+    useMasterTypesQuery();
   const { data: deleteReasonOptions = [], isLoading: isDeleteReasonLoading } =
     useDeleteReasonsQuery(subscID);
   // -------------------------------------
@@ -60,6 +65,7 @@ const OtherMasterPage = () => {
   // -------------------------------------
   const upsertOtherMaster = useUpsertOtherMasterMutation();
   const deleteOtherMaster = useDeleteOtherMasterMutation();
+
   // -------------------------------------
   // UI State
   // -------------------------------------
@@ -166,7 +172,7 @@ const OtherMasterPage = () => {
         />
 
         <Modal open={isModalOpen}>
-          {isDeleteReasonLoading ? (
+          {isDeleteReasonLoading || isMasterTypeLoading ? (
             <h2>Loading Please Wait</h2>
           ) : (
             <OtherMasterForm
@@ -175,6 +181,7 @@ const OtherMasterPage = () => {
               defaultValues={mapRowToFormDefaults(formMode, selectedRow)}
               setModalClose={() => setIsModalOpen(false)}
               deleteReasonOptions={deleteReasonOptions}
+              masterTypeOptions={masterTypeOptions}
             />
           )}
         </Modal>

@@ -16,7 +16,11 @@ import { getOtherMasterFormSchema, type OtherMasterFormData } from "../schemas";
 // -------------------------------------
 // Types
 // -------------------------------------
-import type { DeleteReasonOption, FORM_MODE } from "../types/otherMaster.types";
+import type {
+  DeleteReasonOption,
+  FORM_MODE,
+  MasterTypeOption,
+} from "../types/otherMaster.types";
 
 // -------------------------------------
 // Types – Form Defaults
@@ -39,6 +43,7 @@ interface OtherMasterFormProps {
 
   /** Delete reason dropdown options (passed from Page) */
   deleteReasonOptions?: DeleteReasonOption[];
+  masterTypeOptions: MasterTypeOption[];
 }
 
 // -------------------------------------
@@ -50,6 +55,7 @@ export default function OtherMasterForm({
   onSubmit,
   setModalClose,
   deleteReasonOptions = [],
+  masterTypeOptions,
 }: OtherMasterFormProps) {
   const {
     register,
@@ -82,12 +88,19 @@ export default function OtherMasterForm({
           required
           error={errors.masterType?.message}
         >
-          <ControlledInput
+          <ControlledSelect
             name="masterType"
-            register={register}
+            placeholder="Select Master Type"
             disabled={mode === "View" || mode === "Delete"}
-            error={errors.masterType?.message}
-            placeholder="Enter master type"
+            options={
+              masterTypeOptions?.map((masterType) => ({
+                label: masterType.masterType,
+                value: masterType.masterType,
+              })) ?? []
+            }
+            setValue={setValue}
+            error={errors.lockStatus?.message}
+            defaultValue="N"
           />
         </FormField>
 
