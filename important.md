@@ -1,40 +1,43 @@
-## Add Date type for FOrm
+Got it — this is a **note to self / TODO**, not completed work. Here’s a clear, simple rewrite:
 
-## Remove extra error from COntrolled Inputs
-⚠️ Issues Remaining (Medium Severity)
-1. Page Component Is Still Too Smart
+---
 
-Handles queries
+### TODO
 
-Handles modal state
+- Add **Date** type support to the form
+- Remove extra validation errors from controlled inputs
 
-Handles mutations
+---
 
-Handles mapping
+### ⚠️ Pending Issues (Medium Priority)
 
-Fix later: extract a controller hook
-useOtherMasterPageController()
+1. **Page Component Is Too Smart**
+   - Handles queries
+   - Manages modal state
+   - Runs mutations
+   - Handles data mapping
 
-2. No Error Boundaries Yet
+   **To do:** extract logic into a controller hook
+   `useOtherMasterPageController()`
 
-Errors bubble silently
+2. **Missing Error Boundaries**
+   - Errors fail silently
+   - Mutation failures are not surfaced
 
-Mutation failures not surfaced clearly
+   **To do:** add mutation error handling and toast notifications
 
-Fix later: mutation error handling + toast layer
+3. **No Permission Model**
+   - UI assumes access
+   - No guardrails
 
-3. No Permission Model Yet
+   **To do:** add permission / policy hooks
 
-UI assumes access
+4. **Partial Schema Usage**
+   - Form schema exists
+   - API response schema is unclear
 
-No guardrails
+   **To do:** add Zod parsing for query responses
 
-Fix later: policy hooks
+---
 
-4. Partial Schema Usage
-
-Form schema exists
-
-API response schema unclear
-
-Fix later: Zod parse on query response
+If you want it even shorter (checklist-style), I can tighten it more.

@@ -177,3 +177,61 @@ export function ControlledDate<T extends FieldValues>({
     />
   );
 }
+
+// Example useForm setup
+// const { register, control, formState: { errors } } = useForm<ExampleFormValues>();
+
+// -------------------------------------
+// 1. ControlledInput
+// -------------------------------------
+
+// <ControlledInput<ExampleFormValues>
+//   name="email"
+//   type="email"
+//   register={register}
+//   error={errors.email?.message}
+//   placeholder="Enter email"
+// />
+
+// <ControlledInput<ExampleFormValues>
+//   name="password"
+//   type="password"
+//   register={register}
+//   error={errors.password?.message}
+// />
+
+// -------------------------------------
+// 2. ControlledTextarea
+// -------------------------------------
+
+// <ControlledTextarea<ExampleFormValues>
+//   name="notes"
+//   register={register}
+//   error={errors.notes?.message}
+//   placeholder="Enter notes"
+// />
+
+// -------------------------------------
+// 3. ControlledSelect
+// -------------------------------------
+
+// <ControlledSelect<ExampleFormValues, "admin" | "user">
+//   name="role"
+//   control={control}
+//   options={[
+//     { label: "Admin", value: "admin" },
+//     { label: "User", value: "user" },
+//   ]}
+//   error={errors.role?.message}
+//   placeholder="Select role"
+// />
+
+// -------------------------------------
+// 4. ControlledDate
+// -------------------------------------
+
+// <ControlledDate<ExampleFormValues>
+//   name="joinDate"
+//   register={register}
+//   error={errors.joinDate?.message}
+// />
