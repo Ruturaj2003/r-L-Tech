@@ -19,21 +19,35 @@ import { cn } from "@/lib/utils";
 import { TablePagination } from "@/components/data-table/TablePagination";
 import { TableSkeleton } from "@/components/data-table/TableSkeleton";
 
+/**
+ * Props for the DataTable component.
+ */
 interface DataTableProps<TData> {
+  /** Column definitions */
   columns: ColumnDef<TData>[];
+
+  /** Table data */
   data: TData[];
+
+  /** Loading state */
   isLoading: boolean;
 
+  /** Global search value */
   globalFilter: string;
+
+  /** Setter for global search value */
   setGlobalFilter: (value: string) => void;
 
-  /** Optional table label for accessibility */
+  /** Optional accessible label for the table */
   ariaLabel?: string;
 
-  /** Page size */
+  /** Number of rows per page */
   pageSize?: number;
 }
 
+/**
+ * Generic data table with sorting, filtering, and pagination.
+ */
 export function DataTable<TData>({
   columns,
   data,
@@ -50,7 +64,7 @@ export function DataTable<TData>({
     pageSize,
   });
 
-  // UX: only one filter open at a time
+  /** Tracks which column filter dropdown is open */
   const [openFilterId, setOpenFilterId] = useState<string | null>(null);
 
   const table = useReactTable({
@@ -82,7 +96,6 @@ export function DataTable<TData>({
 
   return (
     <div className="flex-1 flex flex-col overflow-hidden bg-card border border-border rounded-sm">
-      {/* TABLE */}
       <div className="flex-1 overflow-auto">
         <table
           role="table"
