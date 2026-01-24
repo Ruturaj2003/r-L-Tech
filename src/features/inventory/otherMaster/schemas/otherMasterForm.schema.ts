@@ -1,5 +1,5 @@
 import { z } from "zod";
-import type { FORM_MODE } from "../types/otherMaster.types";
+import type { FORM_MODE } from "@/types/commonTypes";
 
 /* ------------------------------------------------------------------ */
 /*                        UI FORM SCHEMA (MODE-AWARE)                  */

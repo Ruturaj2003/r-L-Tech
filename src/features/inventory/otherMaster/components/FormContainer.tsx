@@ -7,7 +7,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import type { FORM_MODE } from "../types/otherMaster.types";
+import type { FORM_MODE } from "@/types/commonTypes";
 import { Loader2 } from "lucide-react";
 
 interface FormContainerProps {

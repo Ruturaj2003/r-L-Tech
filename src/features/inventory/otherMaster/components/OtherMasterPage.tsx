@@ -29,7 +29,7 @@ import { mapRowToFormDefaults } from "./OtherMasterForm.mapper";
 // -------------------------------------
 // Types
 // -------------------------------------
-import type { FORM_MODE } from "../types/otherMaster.types";
+import type { FORM_MODE } from "@/types/commonTypes";
 import type {
   DeleteOtherMasterRequest,
   OtherMasterEntity,

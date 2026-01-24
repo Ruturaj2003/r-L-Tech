@@ -20,9 +20,9 @@ import { getOtherMasterFormSchema, type OtherMasterFormData } from "../schemas";
 // -------------------------------------
 // Types
 // -------------------------------------
+import type { FORM_MODE } from "@/types/commonTypes";
 import type {
   DeleteReasonOption,
-  FORM_MODE,
   MasterTypeOption,
 } from "../types/otherMaster.types";
 import { useEffect, useState } from "react";
