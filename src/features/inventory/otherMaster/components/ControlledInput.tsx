@@ -230,39 +230,45 @@ export function ControlledCombobox<
     <Controller
       name={name}
       control={control}
-      render={({ field }) => (
-        <Combobox
-          items={itemValues}
-          onValueChange={(val) => {
-            field.onChange(val ?? "");
-          }}
-          disabled={disabled}
-        >
-          <ComboboxInput
-            ref={field.ref}
-            placeholder={placeholder}
-            showClear={showClear}
-            aria-invalid={!!error}
-            className={className}
+      render={({ field }) => {
+        const selectedOption = options.find((opt) => opt.value === field.value);
+
+        return (
+          <Combobox
+            items={itemValues}
+            value={field.value ?? ""}
+            onValueChange={(val) => {
+              field.onChange(val ?? "");
+            }}
             disabled={disabled}
-          />
+          >
+            <ComboboxInput
+              ref={field.ref}
+              value={selectedOption?.label ?? ""}
+              placeholder={placeholder}
+              showClear={showClear}
+              aria-invalid={!!error}
+              className={className}
+              disabled={disabled}
+            />
 
-          <ComboboxContent>
-            <ComboboxEmpty>{emptyMessage}</ComboboxEmpty>
+            <ComboboxContent>
+              <ComboboxEmpty>{emptyMessage}</ComboboxEmpty>
 
-            <ComboboxList>
-              {(item: V) => {
-                const option = options.find((opt) => opt.value === item);
-                return (
-                  <ComboboxItem key={item} value={item}>
-                    {option?.label ?? item}
-                  </ComboboxItem>
-                );
-              }}
-            </ComboboxList>
-          </ComboboxContent>
-        </Combobox>
-      )}
+              <ComboboxList>
+                {(item: V) => {
+                  const option = options.find((opt) => opt.value === item);
+                  return (
+                    <ComboboxItem key={item} value={item}>
+                      {option?.label ?? item}
+                    </ComboboxItem>
+                  );
+                }}
+              </ComboboxList>
+            </ComboboxContent>
+          </Combobox>
+        );
+      }}
     />
   );
 }
