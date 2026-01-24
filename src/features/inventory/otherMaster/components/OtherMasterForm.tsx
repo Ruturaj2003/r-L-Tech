@@ -25,17 +25,9 @@ import type {
   MasterTypeOption,
 } from "../types/otherMaster.types";
 import { useEffect, useState } from "react";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Loader2 } from "lucide-react";
+
+import { DeleteReasonDialog } from "@/components/DeleteReasonDialog";
+import { ConfirmDialog } from "@/components/ConfirmDialog";
 
 // -------------------------------------
 // Props
@@ -93,31 +85,17 @@ export default function OtherMasterForm({
 
   return (
     <>
-      <AlertDialog open={showConfirmClose} onOpenChange={setShowConfirmClose}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Unsaved changes</AlertDialogTitle>
-            <AlertDialogDescription>
-              You have unsaved changes. If you close now, your changes will be
-              lost.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-
-            <AlertDialogAction
-              onClick={() => {
-                setShowConfirmClose(false);
-                setModalClose?.();
-              }}
-            >
-              Discard changes
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
+      <ConfirmDialog
+        open={showConfirmClose}
+        onOpenChange={setShowConfirmClose}
+        title="Unsaved changes"
+        description="You have unsaved changes. If you close now, your changes will be lost."
+        confirmLabel="Discard changes"
+        onConfirm={() => {
+          setShowConfirmClose(false);
+          setModalClose?.();
+        }}
+      />
       <FormContainer
         title="Other Master"
         onSubmit={handleSubmit(onSubmit, onInvalid)}
@@ -195,57 +173,24 @@ export default function OtherMasterForm({
           Delete Reason (ONLY in Delete mode)
         ------------------------------------- */}
         {mode === "Delete" && (
-          <AlertDialog
-            defaultOpen
+          <DeleteReasonDialog<OtherMasterFormData, DeleteReasonOption>
             open={openDeleteDialog}
             onOpenChange={setOpenDeleteDialog}
-          >
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Confirm Delete</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This action is irreversible. Please select a reason.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-
-              <FormField
-                label="Delete Reason"
-                name="deleteReason"
-                required
-                error={errors.deleteReason?.message}
-              >
-                <ControlledSelect
-                  name="deleteReason"
-                  control={control}
-                  options={deleteReasonOptions.map((r) => ({
-                    label: r.masterName,
-                    value: String(r.mTransNo),
-                  }))}
-                />
-              </FormField>
-
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-
-                <AlertDialogAction
-                  variant="destructive"
-                  onClick={handleSubmit(onSubmit, onInvalid)}
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Deleting...
-                    </>
-                  ) : (
-                    "Confirm Delete"
-                  )}
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+            control={control}
+            errors={errors}
+            name="deleteReason"
+            options={deleteReasonOptions}
+            getLabel={(r) => r.masterName}
+            getValue={(r) => String(r.mTransNo)}
+            isSubmitting={isSubmitting}
+            onConfirm={handleSubmit(onSubmit, onInvalid)}
+          />
         )}
       </FormContainer>
     </>
   );
 }
+// This function is called automatically for each option.
+// `r` is one item from the options array.
+// We return `r.masterName` to use as the display label.
+// (r) => r.masterName
