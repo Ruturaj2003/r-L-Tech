@@ -36,6 +36,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Loader2 } from "lucide-react";
 
 // -------------------------------------
 // Props
@@ -193,10 +194,18 @@ export default function OtherMasterForm({
               <AlertDialogCancel>Cancel</AlertDialogCancel>
 
               <AlertDialogAction
-                variant={"destructive"}
+                variant="destructive"
                 onClick={handleSubmit(onSubmit, onInvalid)}
+                disabled={isSubmitting}
               >
-                Confirm Delete
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Deleting...
+                  </>
+                ) : (
+                  "Confirm Delete"
+                )}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

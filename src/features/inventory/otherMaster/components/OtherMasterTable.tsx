@@ -17,6 +17,7 @@ import type {
 import type { OtherMasterEntity } from "../schemas";
 import { ChevronDown, ChevronUp, Search, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface OtherMasterTableProps {
   columnData: ColumnDef<OtherMasterEntity>[];
@@ -74,8 +75,40 @@ export const OtherMasterTable = ({
 
   if (isLoading) {
     return (
-      <div className="flex-1 flex items-center justify-center text-muted-foreground">
-        Loading…
+      <div className="flex-1 flex flex-col overflow-hidden bg-card border border-border rounded-sm">
+        <div className="flex-1 overflow-auto">
+          <table className="min-w-175 w-full border-collapse text-sm">
+            {/* Header skeleton */}
+            <thead className="sticky top-0 bg-muted">
+              <tr>
+                {columnData.map((_, idx) => (
+                  <th
+                    key={idx}
+                    className="border-b border-border px-3 py-2 text-left"
+                  >
+                    <Skeleton className="h-4 w-24" />
+                  </th>
+                ))}
+              </tr>
+            </thead>
+
+            {/* Body skeleton */}
+            <tbody>
+              {Array.from({ length: 5 }).map((_, rowIdx) => (
+                <tr key={rowIdx}>
+                  {columnData.map((_, colIdx) => (
+                    <td
+                      key={colIdx}
+                      className="border-b border-border px-3 py-2"
+                    >
+                      <Skeleton className="h-4 w-full" />
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     );
   }

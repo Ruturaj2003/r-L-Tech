@@ -41,6 +41,9 @@ import {
   useDeleteReasonsQuery,
   useMasterTypesQuery,
 } from "../hooks/useOtherMasterDropdown";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 // -------------------------------------
 // Page Component
@@ -80,58 +83,74 @@ const OtherMasterPage = () => {
   // Handlers
   // -------------------------------------
   const handleFormSubmit = async (data: OtherMasterFormData) => {
-    if (formMode === "Create") {
-      const payload: UpsertOtherMasterRequest = {
-        createdBy: 1,
-        createdOn: new Date().toISOString(),
-        mCount: 0,
-        subscID,
-        mTransNo: 0,
-        systemIP: "0.0.00",
-        status: "Insert",
-        ...data,
-      };
-      console.log("Craete FN run");
+    try {
+      if (formMode === "Create") {
+        const payload: UpsertOtherMasterRequest = {
+          createdBy: 1,
+          createdOn: new Date().toISOString(),
+          mCount: 0,
+          subscID,
+          mTransNo: 0,
+          systemIP: "0.0.00",
+          status: "Insert",
+          ...data,
+        };
 
-      await upsertOtherMaster.mutateAsync(payload);
+        await upsertOtherMaster.mutateAsync(payload);
+        toast.success("Master created successfully");
+      }
+
+      if (formMode === "Edit") {
+        // update payload
+        // Extract the hidden Fields which are not shown in form here
+        // The ! tells type script that I knows its there
+        const hiddenData = selectedRow;
+
+        const payload: UpsertOtherMasterRequest = {
+          createdBy: 1,
+          createdOn: new Date().toISOString(),
+          mCount: 0,
+          subscID,
+          mTransNo: hiddenData!.mTransNo,
+          systemIP: "0.0.00",
+          status: "Update",
+          ...data,
+        };
+
+        await upsertOtherMaster.mutateAsync(payload);
+        toast.success("Master updated successfully");
+      }
+
+      if (formMode === "Delete") {
+        // delete payload
+        // TODO :  const UserNo = Number(
+        //   JSON.parse(localStorage.getItem("LogUser")).mTransNo,
+        // );
+        const hiddenData = selectedRow;
+        const payload: DeleteOtherMasterRequest = {
+          mTransNo: hiddenData!.mTransNo,
+          reason: data.deleteReason!,
+          userNo: 1,
+        };
+        await deleteOtherMaster.mutate(payload);
+        toast.success("Master deleted successfully");
+      }
+
+      setIsModalOpen(false);
+    } catch (error) {
+      const operation =
+        formMode === "Create"
+          ? "create"
+          : formMode === "Edit"
+            ? "update"
+            : "delete";
+
+      toast.error(`Failed to ${operation} master`, {
+        description:
+          error instanceof Error ? error.message : "Please try again",
+      });
+      console.error(`Error during ${operation}:`, error);
     }
-
-    if (formMode === "Edit") {
-      // update payload
-      // Extract the hidden Fields which are not shown in form here
-      // The ! tells type script that I knows its there
-      const hiddenData = selectedRow;
-
-      const payload: UpsertOtherMasterRequest = {
-        createdBy: 1,
-        createdOn: new Date().toISOString(),
-        mCount: 0,
-        subscID,
-        mTransNo: hiddenData!.mTransNo,
-        systemIP: "0.0.00",
-        status: "Update",
-        ...data,
-      };
-      console.log("Craete FN run");
-
-      await upsertOtherMaster.mutateAsync(payload);
-    }
-
-    if (formMode === "Delete") {
-      // delete payload
-      // TODO :  const UserNo = Number(
-      //   JSON.parse(localStorage.getItem("LogUser")).mTransNo,
-      // );
-      const hiddenData = selectedRow;
-      const payload: DeleteOtherMasterRequest = {
-        mTransNo: hiddenData!.mTransNo,
-        reason: data.deleteReason!,
-        userNo: 1,
-      };
-      await deleteOtherMaster.mutate(payload);
-    }
-
-    setIsModalOpen(false);
   };
 
   // -------------------------------------
@@ -161,6 +180,7 @@ const OtherMasterPage = () => {
   return (
     <div className="w-full h-full overflow-y-auto">
       <div className="flex flex-col h-full">
+        <Button onClick={() => toast.success("GG")}>as</Button>
         <OtherMasterHeader
           globalFilter={globalFilter}
           setGlobalFilter={setGlobalFilter}
@@ -173,7 +193,12 @@ const OtherMasterPage = () => {
 
         <Modal open={isModalOpen}>
           {isDeleteReasonLoading || isMasterTypeLoading ? (
-            <h2>Loading Please Wait</h2>
+            <div className="flex flex-col items-center justify-center p-12 gap-4">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              <p className="text-sm text-muted-foreground">
+                Loading form data...
+              </p>
+            </div>
           ) : (
             <OtherMasterForm
               mode={formMode}

@@ -1,6 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-
+import { Toaster } from "sonner";
 import App from "./App.tsx";
 import "./index.css";
 
@@ -16,6 +16,7 @@ createRoot(document.getElementById("root")!).render(
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
         <ThemeProvider defaultTheme="light">
+          <Toaster position="top-center" expand={false} richColors />
           <App />
         </ThemeProvider>
         {import.meta.env.DEV && <ReactQueryDevtools initialIsOpen={false} />}

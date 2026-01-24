@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/card";
 
 import type { FORM_MODE } from "../types/otherMaster.types";
+import { Loader2 } from "lucide-react";
 
 interface FormContainerProps {
   title: string;
@@ -84,7 +85,14 @@ export const FormContainer = ({
                 disabled={isSubmitting}
                 onClick={mode === "Delete" ? onDeleteClick : undefined}
               >
-                {isSubmitting ? `${submitConfig.label}...` : submitConfig.label}
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    submitConfig.label...
+                  </>
+                ) : (
+                  submitConfig.label
+                )}
               </Button>
             )}
           </div>
