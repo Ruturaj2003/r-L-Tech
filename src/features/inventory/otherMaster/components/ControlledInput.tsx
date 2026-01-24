@@ -244,6 +244,7 @@ export function ControlledCombobox<
             showClear={showClear}
             aria-invalid={!!error}
             className={className}
+            disabled={disabled}
           />
 
           <ComboboxContent>
