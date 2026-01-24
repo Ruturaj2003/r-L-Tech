@@ -1,50 +1,51 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
 
-// -------------------------------------
-// Feature Components
-// -------------------------------------
 import { FormContainer } from "@/components/form/FormContainer";
 import { FormField } from "@/components/form/FormField";
-
 import {
   ControlledCombobox,
   ControlledInput,
   ControlledSelect,
 } from "@/components/form/ControlledInputs";
-// -------------------------------------
-// Schemas
-// -------------------------------------
+
 import { getOtherMasterFormSchema, type OtherMasterFormData } from "../schemas";
 import type { FORM_MODE } from "@/types/commonTypes";
-// -------------------------------------
-// Types
-// -------------------------------------
 import type {
   DeleteReasonOption,
   MasterTypeOption,
 } from "../types/otherMaster.types";
-import { useEffect, useState } from "react";
 
 import { DeleteReasonDialog } from "@/components/DeleteReasonDialog";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
 
-// -------------------------------------
-// Props
-// -------------------------------------
+/**
+ * Props for the OtherMasterForm component.
+ */
 interface OtherMasterFormProps {
+  /** Current form mode */
   mode: FORM_MODE;
+
+  /** Initial form values */
   defaultValues: OtherMasterFormData;
+
+  /** Submit handler */
   onSubmit: (data: OtherMasterFormData) => Promise<void>;
+
+  /** Optional modal close handler */
   setModalClose?: () => void;
 
+  /** Delete reason options (used in Delete mode) */
   deleteReasonOptions?: DeleteReasonOption[];
+
+  /** Master type options */
   masterTypeOptions: MasterTypeOption[];
 }
 
-// -------------------------------------
-// Component
-// -------------------------------------
+/**
+ * Form component for creating, editing, viewing, and deleting Other Master records.
+ */
 export default function OtherMasterForm({
   mode,
   defaultValues,
@@ -64,9 +65,15 @@ export default function OtherMasterForm({
     defaultValues,
   });
 
+  /** Controls delete reason dialog */
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+
+  /** Controls unsaved changes confirmation dialog */
   const [showConfirmClose, setShowConfirmClose] = useState(false);
 
+  /**
+   * Handles close action and confirms if form has unsaved changes.
+   */
   const handleClose = () => {
     if (isDirty && !isSubmitting) {
       setShowConfirmClose(true);
@@ -75,10 +82,16 @@ export default function OtherMasterForm({
     setModalClose?.();
   };
 
+  /**
+   * Resets form when default values or mode changes.
+   */
   useEffect(() => {
     reset(defaultValues);
   }, [defaultValues, reset, mode]);
 
+  /**
+   * Handler for invalid form submission.
+   */
   const onInvalid = (errors: unknown) => {
     console.log("FORM ERRORS", errors);
   };
@@ -96,6 +109,7 @@ export default function OtherMasterForm({
           setModalClose?.();
         }}
       />
+
       <FormContainer
         title="Other Master"
         onSubmit={handleSubmit(onSubmit, onInvalid)}
@@ -104,9 +118,6 @@ export default function OtherMasterForm({
         mode={mode}
         onDelete={() => setOpenDeleteDialog(true)}
       >
-        {/* -------------------------------------
-          Main Fields
-        ------------------------------------- */}
         <div className="grid grid-cols-2 gap-x-2">
           <FormField
             label="Master Type"
@@ -148,9 +159,6 @@ export default function OtherMasterForm({
           </FormField>
         </div>
 
-        {/* -------------------------------------
-          Lock Status
-        ------------------------------------- */}
         <FormField
           label="Lock Status"
           name="lockStatus"
@@ -169,9 +177,6 @@ export default function OtherMasterForm({
           />
         </FormField>
 
-        {/* -------------------------------------
-          Delete Reason (ONLY in Delete mode)
-        ------------------------------------- */}
         {mode === "Delete" && (
           <DeleteReasonDialog<OtherMasterFormData, DeleteReasonOption>
             open={openDeleteDialog}
@@ -190,7 +195,3 @@ export default function OtherMasterForm({
     </>
   );
 }
-// This function is called automatically for each option.
-// `r` is one item from the options array.
-// We return `r.masterName` to use as the display label.
-// (r) => r.masterName
