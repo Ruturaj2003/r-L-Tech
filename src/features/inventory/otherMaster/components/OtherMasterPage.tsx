@@ -18,8 +18,7 @@ import {
 import { OtherMasterHeader } from "./OtherMasterHeader";
 import { OtherMasterTable } from "./OtherMasterTable";
 import OtherMasterForm from "./OtherMasterForm";
-import { Modal } from "./Modal";
-
+import { Modal } from "@/components/Modal";
 // -------------------------------------
 // Feature Utils
 // -------------------------------------

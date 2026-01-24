@@ -5,13 +5,13 @@ import { useForm } from "react-hook-form";
 // Feature Components
 // -------------------------------------
 import { FormContainer } from "@/components/form/FormContainer";
-import { FormField } from "./FormField";
+import { FormField } from "@/components/form/FormField";
+
 import {
+  ControlledCombobox,
   ControlledInput,
   ControlledSelect,
-  ControlledCombobox,
-} from "./ControlledInput";
-
+} from "@/components/form/ControlledInputs";
 // -------------------------------------
 // Schemas
 // -------------------------------------
