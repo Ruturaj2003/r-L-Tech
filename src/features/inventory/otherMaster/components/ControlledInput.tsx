@@ -16,6 +16,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import {
+  Combobox,
+  ComboboxInput,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxList,
+  ComboboxItem,
+} from "@/components/ui/combobox";
+
 /* ============================================================================
  * 1. CONTROLLED INPUT (native inputs via register)
  * ========================================================================== */
@@ -137,7 +146,7 @@ export function ControlledSelect<
             <SelectValue placeholder={placeholder} />
           </SelectTrigger>
 
-          <SelectContent>
+          <SelectContent position="item-aligned" className=" max-h-12">
             {options.map((opt) => (
               <SelectItem key={opt.value} value={opt.value}>
                 {opt.label}
@@ -174,6 +183,85 @@ export function ControlledDate<T extends FieldValues>({
       disabled={disabled}
       aria-invalid={!!error}
       {...register(name)}
+    />
+  );
+}
+
+/* ============================================================================
+ * 5. CONTROLLED COMBOBOX (shadcn Combobox via Controller)
+ * ========================================================================== */
+
+export interface ComboboxOption<V extends string = string> {
+  label: string;
+  value: V;
+}
+export interface ControlledComboboxProps<
+  T extends FieldValues,
+  V extends string = string,
+> {
+  name: Path<T>;
+  control: Control<T>;
+  options: readonly ComboboxOption<V>[];
+  error?: string;
+  placeholder?: string;
+  emptyMessage?: string;
+  disabled?: boolean;
+  showClear?: boolean;
+  className?: string;
+}
+
+export function ControlledCombobox<
+  T extends FieldValues,
+  V extends string = string,
+>({
+  name,
+  control,
+  options,
+  error,
+  placeholder = "Select an option",
+  emptyMessage = "No items found.",
+  disabled = false,
+  showClear = false,
+  className = "",
+}: ControlledComboboxProps<T, V>) {
+  const itemValues = options.map((opt) => opt.value);
+
+  return (
+    <Controller
+      name={name}
+      control={control}
+      render={({ field }) => (
+        <Combobox
+          items={itemValues}
+          onValueChange={(val) => {
+            field.onChange(val ?? "");
+          }}
+          disabled={disabled}
+        >
+          <ComboboxInput
+            ref={field.ref}
+            placeholder={placeholder}
+            showClear={showClear}
+            aria-invalid={!!error}
+            className={className}
+          />
+
+          <ComboboxContent>
+            <ComboboxEmpty>{emptyMessage}</ComboboxEmpty>
+
+            <ComboboxList>
+              {(item: V) => {
+                const option = options.find((opt) => opt.value === item);
+                return (
+                  <ComboboxItem key={item} value={item}>
+                    {option?.label ?? item}
+                  </ComboboxItem>
+                );
+              }}
+            </ComboboxList>
+          </ComboboxContent>
+        </Combobox>
+      )}
     />
   );
 }
@@ -234,4 +322,24 @@ export function ControlledDate<T extends FieldValues>({
 //   name="joinDate"
 //   register={register}
 //   error={errors.joinDate?.message}
+// />
+
+// Example useForm setup
+// const { control, formState: { errors } } = useForm<ExampleFormValues>();
+
+// -------------------------------------
+// 5. ControlledCombobox
+// -------------------------------------
+
+// <ControlledCombobox<ExampleFormValues, "nextjs" | "sveltekit" | "nuxtjs">
+//   name="framework"
+//   control={control}
+//   options={[
+//     { label: "Next.js", value: "nextjs" },
+//     { label: "SvelteKit", value: "sveltekit" },
+//     { label: "Nuxt.js", value: "nuxtjs" },
+//   ]}
+//   error={errors.framework?.message}
+//   placeholder="Select a framework"
+//   showClear
 // />

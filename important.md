@@ -1,11 +1,9 @@
-Got it — this is a **note to self / TODO**, not completed work. Here’s a clear, simple rewrite:
-
----
-
 ### TODO
 
 - Add **Date** type support to the form
 - Remove extra validation errors from controlled inputs
+- Check if that useEffect is needed and if that is causing issues.
+- Check out combobox , it has many variants
 
 ---
 

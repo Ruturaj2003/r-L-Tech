@@ -6,7 +6,11 @@ import { useForm } from "react-hook-form";
 // -------------------------------------
 import { FormContainer } from "./FormContainer";
 import { FormField } from "./FormField";
-import { ControlledInput, ControlledSelect } from "./ControlledInput";
+import {
+  ControlledInput,
+  ControlledSelect,
+  ControlledCombobox,
+} from "./ControlledInput";
 
 // -------------------------------------
 // Schemas
@@ -85,19 +89,20 @@ export default function OtherMasterForm({
           error={errors.masterType?.message}
           className="min-w-10"
         >
-          <ControlledSelect
+          <ControlledCombobox<OtherMasterFormData, string>
             name="masterType"
+            control={control}
             placeholder="Select Master Type"
-            className=" min-w-40 mt-2"
             disabled={mode === "View" || mode === "Delete"}
+            showClear={mode !== "View" && mode !== "Delete"}
             options={
               masterTypeOptions?.map((masterType) => ({
                 label: masterType.masterType,
                 value: masterType.masterType,
               })) ?? []
             }
-            control={control}
             error={errors.masterType?.message}
+            className="min-w-40 mt-2"
           />
         </FormField>
 
