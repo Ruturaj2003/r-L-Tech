@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 // -------------------------------------
 // Feature Components
 // -------------------------------------
-import { FormContainer } from "./FormContainer";
+import { FormContainer } from "@/components/form/FormContainer";
 import { FormField } from "./FormField";
 import {
   ControlledInput,
@@ -16,11 +16,10 @@ import {
 // Schemas
 // -------------------------------------
 import { getOtherMasterFormSchema, type OtherMasterFormData } from "../schemas";
-
+import type { FORM_MODE } from "@/types/commonTypes";
 // -------------------------------------
 // Types
 // -------------------------------------
-import type { FORM_MODE } from "@/types/commonTypes";
 import type {
   DeleteReasonOption,
   MasterTypeOption,
@@ -47,7 +46,6 @@ interface OtherMasterFormProps {
   onSubmit: (data: OtherMasterFormData) => Promise<void>;
   setModalClose?: () => void;
 
-  /** Delete reason dropdown options (passed from Page) */
   deleteReasonOptions?: DeleteReasonOption[];
   masterTypeOptions: MasterTypeOption[];
 }
@@ -66,15 +64,14 @@ export default function OtherMasterForm({
   const {
     register,
     handleSubmit,
-
     reset,
     control,
-
     formState: { errors, isSubmitting, isDirty },
   } = useForm<OtherMasterFormData>({
     resolver: zodResolver(getOtherMasterFormSchema(mode)),
     defaultValues,
   });
+
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [showConfirmClose, setShowConfirmClose] = useState(false);
 
@@ -83,13 +80,13 @@ export default function OtherMasterForm({
       setShowConfirmClose(true);
       return;
     }
-
     setModalClose?.();
   };
 
   useEffect(() => {
     reset(defaultValues);
   }, [defaultValues, reset, mode]);
+
   const onInvalid = (errors: unknown) => {
     console.log("FORM ERRORS", errors);
   };
@@ -125,13 +122,13 @@ export default function OtherMasterForm({
         title="Other Master"
         onSubmit={handleSubmit(onSubmit, onInvalid)}
         isSubmitting={isSubmitting}
-        setModalClose={handleClose}
+        onClose={handleClose}
         mode={mode}
-        onDeleteClick={() => setOpenDeleteDialog(true)}
+        onDelete={() => setOpenDeleteDialog(true)}
       >
         {/* -------------------------------------
           Main Fields
-      ------------------------------------- */}
+        ------------------------------------- */}
         <div className="grid grid-cols-2 gap-x-2">
           <FormField
             label="Master Type"
@@ -175,7 +172,7 @@ export default function OtherMasterForm({
 
         {/* -------------------------------------
           Lock Status
-      ------------------------------------- */}
+        ------------------------------------- */}
         <FormField
           label="Lock Status"
           name="lockStatus"
@@ -196,7 +193,7 @@ export default function OtherMasterForm({
 
         {/* -------------------------------------
           Delete Reason (ONLY in Delete mode)
-      ------------------------------------- */}
+        ------------------------------------- */}
         {mode === "Delete" && (
           <AlertDialog
             defaultOpen
