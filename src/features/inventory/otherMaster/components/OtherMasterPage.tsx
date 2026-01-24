@@ -1,33 +1,19 @@
-// -------------------------------------
-// External
-// -------------------------------------
 import { useState } from "react";
 
-// -------------------------------------
-// Feature Hooks
-// -------------------------------------
 import { useOtherMastersQuery } from "../hooks/useOtherMastersQuery";
 import {
   useDeleteOtherMasterMutation,
   useUpsertOtherMasterMutation,
 } from "../hooks/useOtherMasterMutations";
 
-// -------------------------------------
-// Feature Components
-// -------------------------------------
 import { OtherMasterHeader } from "./OtherMasterHeader";
 import { OtherMasterTable } from "./OtherMasterTable";
 import OtherMasterForm from "./OtherMasterForm";
 import { Modal } from "@/components/Modal";
-// -------------------------------------
-// Feature Utils
-// -------------------------------------
+
 import { createOtherMasterColumns } from "./OtherMaster.colums";
 import { mapRowToFormDefaults } from "./OtherMasterForm.mapper";
 
-// -------------------------------------
-// Types
-// -------------------------------------
 import type { FORM_MODE } from "@/types/commonTypes";
 import type {
   DeleteOtherMasterRequest,
@@ -46,43 +32,35 @@ import { AlertTriangle, Loader2, RefreshCcw } from "lucide-react";
 import { OtherMasterErrorBoundary } from "./OtherMasterErrorBoundary";
 import { Button } from "@base-ui/react";
 
-// -------------------------------------
-// Page Component
-// -------------------------------------
+/**
+ * Page component for managing Other Master records.
+ * Handles data fetching, form modal state, and CRUD operations.
+ */
 const OtherMasterPage = () => {
-  // -------------------------------------
-  // Constants
-  // -------------------------------------
-  // TODO : take from local storage
+  /** Subscription ID (temporary hardcoded value) */
   const subscID = 1;
 
-  // -------------------------------------
-  // Server State
-  // -------------------------------------
   const {
     data = [],
     isLoading,
     error: masterDataError,
   } = useOtherMastersQuery(subscID);
+
   const {
     data: masterTypeOptions = [],
     isLoading: isMasterTypeLoading,
     error: masterTypeError,
   } = useMasterTypesQuery();
+
   const {
     data: deleteReasonOptions = [],
     isLoading: isDeleteReasonLoading,
     error: deleteReasonError,
   } = useDeleteReasonsQuery(subscID);
-  // -------------------------------------
-  // Mutations
-  // -------------------------------------
+
   const upsertOtherMaster = useUpsertOtherMasterMutation();
   const deleteOtherMaster = useDeleteOtherMasterMutation();
 
-  // -------------------------------------
-  // UI State
-  // -------------------------------------
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formMode, setFormMode] = useState<FORM_MODE>("View");
   const [selectedRow, setSelectedRow] = useState<OtherMasterEntity | null>(
@@ -90,15 +68,15 @@ const OtherMasterPage = () => {
   );
   const [globalFilter, setGlobalFilter] = useState("");
 
-  // -------------------------------------
-  // Handlers
-  // -------------------------------------
+  /**
+   * Handles form submission for create, edit, and delete actions.
+   */
   const handleFormSubmit = async (data: OtherMasterFormData) => {
-    // Double safety Check
     if ((formMode === "Edit" || formMode === "Delete") && !selectedRow) {
       toast.error("No record selected");
       return;
     }
+
     try {
       if (formMode === "Create") {
         const payload: UpsertOtherMasterRequest = {
@@ -116,22 +94,13 @@ const OtherMasterPage = () => {
         toast.success("Master created successfully");
       }
 
-      if (formMode === "Edit") {
-        // update payload
-        // Extract the hidden Fields which are not shown in form here
-        // The ! tells type script that I knows its there
-        if (!selectedRow) {
-          toast.error("No row selected");
-          return;
-        }
-        const hiddenData = selectedRow;
-
+      if (formMode === "Edit" && selectedRow) {
         const payload: UpsertOtherMasterRequest = {
           createdBy: 1,
           createdOn: new Date().toISOString(),
           mCount: 0,
           subscID,
-          mTransNo: hiddenData.mTransNo,
+          mTransNo: selectedRow.mTransNo,
           systemIP: "0.0.00",
           status: "Update",
           ...data,
@@ -141,17 +110,13 @@ const OtherMasterPage = () => {
         toast.success("Master updated successfully");
       }
 
-      if (formMode === "Delete") {
-        // delete payload
-        // TODO :  const UserNo = Number(
-        //   JSON.parse(localStorage.getItem("LogUser")).mTransNo,
-        // );
-        const hiddenData = selectedRow;
+      if (formMode === "Delete" && selectedRow) {
         const payload: DeleteOtherMasterRequest = {
-          mTransNo: hiddenData!.mTransNo,
+          mTransNo: selectedRow.mTransNo,
           reason: data.deleteReason!,
           userNo: 1,
         };
+
         await deleteOtherMaster.mutateAsync(payload);
         toast.success("Master deleted successfully");
       }
@@ -169,13 +134,14 @@ const OtherMasterPage = () => {
         description:
           error instanceof Error ? error.message : "Please try again",
       });
+
       console.error(`Error during ${operation}:`, error);
     }
   };
 
-  // -------------------------------------
-  // Table Configuration
-  // -------------------------------------
+  /**
+   * Column configuration for the table with action handlers.
+   */
   const columns = createOtherMasterColumns({
     onView: (row) => {
       setSelectedRow(row);
@@ -193,10 +159,6 @@ const OtherMasterPage = () => {
       setIsModalOpen(true);
     },
   });
-
-  // -------------------------------------
-  // Render
-  // -------------------------------------
 
   if (masterDataError || masterTypeError || deleteReasonError) {
     return (
@@ -218,6 +180,7 @@ const OtherMasterPage = () => {
       </div>
     );
   }
+
   return (
     <OtherMasterErrorBoundary>
       <div className="w-full h-full overflow-y-auto">
