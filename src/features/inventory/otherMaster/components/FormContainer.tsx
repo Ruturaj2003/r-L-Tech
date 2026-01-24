@@ -17,6 +17,7 @@ interface FormContainerProps {
   className?: string;
   setModalClose?: () => void;
   mode: FORM_MODE;
+  onDeleteClick?: () => void;
 }
 
 // -------------------------------------
@@ -54,6 +55,7 @@ export const FormContainer = ({
   className = "max-w-xl",
   setModalClose,
   mode,
+  onDeleteClick,
 }: FormContainerProps) => {
   const submitConfig = mode !== "View" ? MODE_UI_CONFIG[mode] : null;
 
@@ -77,9 +79,10 @@ export const FormContainer = ({
 
             {submitConfig && (
               <Button
-                type="submit"
+                type={mode === "Delete" ? "button" : "submit"}
                 variant={submitConfig.variant}
                 disabled={isSubmitting}
+                onClick={mode === "Delete" ? onDeleteClick : undefined}
               >
                 {isSubmitting ? `${submitConfig.label}...` : submitConfig.label}
               </Button>

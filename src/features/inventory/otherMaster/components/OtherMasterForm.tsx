@@ -25,7 +25,17 @@ import type {
   FORM_MODE,
   MasterTypeOption,
 } from "../types/otherMaster.types";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 // -------------------------------------
 // Props
@@ -63,6 +73,8 @@ export default function OtherMasterForm({
     resolver: zodResolver(getOtherMasterFormSchema(mode)),
     defaultValues,
   });
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+
   useEffect(() => {
     reset(defaultValues);
   }, [defaultValues, reset, mode]);
@@ -77,6 +89,7 @@ export default function OtherMasterForm({
       isSubmitting={isSubmitting}
       setModalClose={setModalClose}
       mode={mode}
+      onDeleteClick={() => setOpenDeleteDialog(true)}
     >
       {/* -------------------------------------
           Main Fields
@@ -147,25 +160,47 @@ export default function OtherMasterForm({
           Delete Reason (ONLY in Delete mode)
       ------------------------------------- */}
       {mode === "Delete" && (
-        <FormField
-          label="Delete Reason"
-          name="deleteReason"
-          required
-          error={errors.deleteReason?.message}
+        <AlertDialog
+          defaultOpen
+          open={openDeleteDialog}
+          onOpenChange={setOpenDeleteDialog}
         >
-          <ControlledSelect
-            name="deleteReason"
-            options={
-              deleteReasonOptions?.map((reason) => ({
-                label: reason.masterName,
-                value: String(reason.mTransNo),
-              })) ?? []
-            }
-            control={control}
-            error={errors.deleteReason?.message}
-            placeholder="Select delete reason"
-          />
-        </FormField>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Confirm Delete</AlertDialogTitle>
+              <AlertDialogDescription>
+                This action is irreversible. Please select a reason.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+
+            <FormField
+              label="Delete Reason"
+              name="deleteReason"
+              required
+              error={errors.deleteReason?.message}
+            >
+              <ControlledSelect
+                name="deleteReason"
+                control={control}
+                options={deleteReasonOptions.map((r) => ({
+                  label: r.masterName,
+                  value: String(r.mTransNo),
+                }))}
+              />
+            </FormField>
+
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+
+              <AlertDialogAction
+                variant={"destructive"}
+                onClick={handleSubmit(onSubmit, onInvalid)}
+              >
+                Confirm Delete
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       )}
     </FormContainer>
   );

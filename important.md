@@ -4,6 +4,7 @@
 - Remove extra validation errors from controlled inputs
 - Check if that useEffect is needed and if that is causing issues.
 - Check out combobox , it has many variants
+- Delete Reason Modal stuff , Try to make it into a compoent , seems very big and messy
 
 ---
 
