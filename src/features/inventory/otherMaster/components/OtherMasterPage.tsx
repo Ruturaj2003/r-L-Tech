@@ -121,6 +121,10 @@ const OtherMasterPage = () => {
         // update payload
         // Extract the hidden Fields which are not shown in form here
         // The ! tells type script that I knows its there
+        if (!selectedRow) {
+          toast.error("No row selected");
+          return;
+        }
         const hiddenData = selectedRow;
 
         const payload: UpsertOtherMasterRequest = {
@@ -128,7 +132,7 @@ const OtherMasterPage = () => {
           createdOn: new Date().toISOString(),
           mCount: 0,
           subscID,
-          mTransNo: hiddenData!.mTransNo,
+          mTransNo: hiddenData.mTransNo,
           systemIP: "0.0.00",
           status: "Update",
           ...data,

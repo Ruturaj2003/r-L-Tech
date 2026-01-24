@@ -69,12 +69,23 @@ export default function OtherMasterForm({
 
     reset,
     control,
-    formState: { errors, isSubmitting },
+
+    formState: { errors, isSubmitting, isDirty },
   } = useForm<OtherMasterFormData>({
     resolver: zodResolver(getOtherMasterFormSchema(mode)),
     defaultValues,
   });
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [showConfirmClose, setShowConfirmClose] = useState(false);
+
+  const handleClose = () => {
+    if (isDirty && !isSubmitting) {
+      setShowConfirmClose(true);
+      return;
+    }
+
+    setModalClose?.();
+  };
 
   useEffect(() => {
     reset(defaultValues);
@@ -84,133 +95,160 @@ export default function OtherMasterForm({
   };
 
   return (
-    <FormContainer
-      title="Other Master"
-      onSubmit={handleSubmit(onSubmit, onInvalid)}
-      isSubmitting={isSubmitting}
-      setModalClose={setModalClose}
-      mode={mode}
-      onDeleteClick={() => setOpenDeleteDialog(true)}
-    >
-      {/* -------------------------------------
+    <>
+      <AlertDialog open={showConfirmClose} onOpenChange={setShowConfirmClose}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Unsaved changes</AlertDialogTitle>
+            <AlertDialogDescription>
+              You have unsaved changes. If you close now, your changes will be
+              lost.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+
+            <AlertDialogAction
+              onClick={() => {
+                setShowConfirmClose(false);
+                setModalClose?.();
+              }}
+            >
+              Discard changes
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <FormContainer
+        title="Other Master"
+        onSubmit={handleSubmit(onSubmit, onInvalid)}
+        isSubmitting={isSubmitting}
+        setModalClose={handleClose}
+        mode={mode}
+        onDeleteClick={() => setOpenDeleteDialog(true)}
+      >
+        {/* -------------------------------------
           Main Fields
       ------------------------------------- */}
-      <div className="grid grid-cols-2 gap-x-2">
-        <FormField
-          label="Master Type"
-          name="masterType"
-          required
-          error={errors.masterType?.message}
-          className="min-w-10"
-        >
-          <ControlledCombobox<OtherMasterFormData, string>
+        <div className="grid grid-cols-2 gap-x-2">
+          <FormField
+            label="Master Type"
             name="masterType"
-            control={control}
-            placeholder="Select Master Type"
-            disabled={mode === "View" || mode === "Delete"}
-            showClear={mode !== "View" && mode !== "Delete"}
-            options={
-              masterTypeOptions?.map((masterType) => ({
-                label: masterType.masterType,
-                value: masterType.masterType,
-              })) ?? []
-            }
+            required
             error={errors.masterType?.message}
-            className="min-w-40 mt-2"
-          />
-        </FormField>
+            className="min-w-10"
+          >
+            <ControlledCombobox<OtherMasterFormData, string>
+              name="masterType"
+              control={control}
+              placeholder="Select Master Type"
+              disabled={mode === "View" || mode === "Delete"}
+              showClear={mode !== "View" && mode !== "Delete"}
+              options={
+                masterTypeOptions?.map((masterType) => ({
+                  label: masterType.masterType,
+                  value: masterType.masterType,
+                })) ?? []
+              }
+              error={errors.masterType?.message}
+              className="min-w-40 mt-2"
+            />
+          </FormField>
 
-        <FormField
-          label="Master Name"
-          name="masterName"
-          required
-          error={errors.masterName?.message}
-        >
-          <ControlledInput
+          <FormField
+            label="Master Name"
             name="masterName"
-            register={register}
-            disabled={mode === "View" || mode === "Delete"}
+            required
             error={errors.masterName?.message}
-            placeholder="Enter master name"
-          />
-        </FormField>
-      </div>
+          >
+            <ControlledInput
+              name="masterName"
+              register={register}
+              disabled={mode === "View" || mode === "Delete"}
+              error={errors.masterName?.message}
+              placeholder="Enter master name"
+            />
+          </FormField>
+        </div>
 
-      {/* -------------------------------------
+        {/* -------------------------------------
           Lock Status
       ------------------------------------- */}
-      <FormField
-        label="Lock Status"
-        name="lockStatus"
-        required
-        error={errors.lockStatus?.message}
-      >
-        <ControlledSelect
+        <FormField
+          label="Lock Status"
           name="lockStatus"
-          disabled={mode === "View" || mode === "Delete"}
-          options={[
-            { label: "No", value: "N" },
-            { label: "Yes", value: "Y" },
-          ]}
-          control={control}
+          required
           error={errors.lockStatus?.message}
-        />
-      </FormField>
+        >
+          <ControlledSelect
+            name="lockStatus"
+            disabled={mode === "View" || mode === "Delete"}
+            options={[
+              { label: "No", value: "N" },
+              { label: "Yes", value: "Y" },
+            ]}
+            control={control}
+            error={errors.lockStatus?.message}
+          />
+        </FormField>
 
-      {/* -------------------------------------
+        {/* -------------------------------------
           Delete Reason (ONLY in Delete mode)
       ------------------------------------- */}
-      {mode === "Delete" && (
-        <AlertDialog
-          defaultOpen
-          open={openDeleteDialog}
-          onOpenChange={setOpenDeleteDialog}
-        >
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>Confirm Delete</AlertDialogTitle>
-              <AlertDialogDescription>
-                This action is irreversible. Please select a reason.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
+        {mode === "Delete" && (
+          <AlertDialog
+            defaultOpen
+            open={openDeleteDialog}
+            onOpenChange={setOpenDeleteDialog}
+          >
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Confirm Delete</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action is irreversible. Please select a reason.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
 
-            <FormField
-              label="Delete Reason"
-              name="deleteReason"
-              required
-              error={errors.deleteReason?.message}
-            >
-              <ControlledSelect
+              <FormField
+                label="Delete Reason"
                 name="deleteReason"
-                control={control}
-                options={deleteReasonOptions.map((r) => ({
-                  label: r.masterName,
-                  value: String(r.mTransNo),
-                }))}
-              />
-            </FormField>
-
-            <AlertDialogFooter>
-              <AlertDialogCancel>Cancel</AlertDialogCancel>
-
-              <AlertDialogAction
-                variant="destructive"
-                onClick={handleSubmit(onSubmit, onInvalid)}
-                disabled={isSubmitting}
+                required
+                error={errors.deleteReason?.message}
               >
-                {isSubmitting ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Deleting...
-                  </>
-                ) : (
-                  "Confirm Delete"
-                )}
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      )}
-    </FormContainer>
+                <ControlledSelect
+                  name="deleteReason"
+                  control={control}
+                  options={deleteReasonOptions.map((r) => ({
+                    label: r.masterName,
+                    value: String(r.mTransNo),
+                  }))}
+                />
+              </FormField>
+
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+
+                <AlertDialogAction
+                  variant="destructive"
+                  onClick={handleSubmit(onSubmit, onInvalid)}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Deleting...
+                    </>
+                  ) : (
+                    "Confirm Delete"
+                  )}
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        )}
+      </FormContainer>
+    </>
   );
 }

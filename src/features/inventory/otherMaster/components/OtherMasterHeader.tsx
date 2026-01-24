@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Search, X } from "lucide-react";
+import { useDeferredValue, useEffect, useState } from "react";
 
 interface OtherMasterHeaderProps {
   globalFilter: string;
@@ -12,6 +13,13 @@ export const OtherMasterHeader = ({
   setGlobalFilter,
   setModalOpen,
 }: OtherMasterHeaderProps) => {
+  const [searchInput, setSearchInput] = useState("");
+  const deferredSearch = useDeferredValue(searchInput);
+
+  useEffect(() => {
+    setGlobalFilter(deferredSearch);
+  }, [deferredSearch, setGlobalFilter]);
+
   return (
     <div className="border-b border-border px-4 lg:py-4 pb-1">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -31,7 +39,7 @@ export const OtherMasterHeader = ({
             <input
               type="text"
               value={globalFilter}
-              onChange={(e) => setGlobalFilter(e.target.value)}
+              onChange={(e) => setSearchInput(e.target.value)}
               placeholder="Search…"
               className="
                 h-9 w-full
