@@ -120,7 +120,12 @@ export const OtherMasterTable = ({
     <div className="flex-1 flex flex-col overflow-hidden bg-card border border-border rounded-sm">
       {/* TABLE */}
       <div className="flex-1 overflow-auto">
-        <table className="min-w-175 w-full border-collapse text-sm">
+        <table
+          role="table"
+          aria-label="Other Master data table"
+          aria-busy={isLoading}
+          className="min-w-175 w-full border-collapse text-sm"
+        >
           <thead className="sticky top-0 bg-muted text-muted-foreground z-10">
             {table.getHeaderGroups().map((group) => (
               <tr key={group.id}>
