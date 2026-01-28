@@ -246,7 +246,7 @@ export function ControlledCombobox<
               ref={field.ref}
               value={selectedOption?.label ?? ""}
               placeholder={placeholder}
-              showClear={showClear}
+              showClear={showClear ? !!field.value : false}
               aria-invalid={!!error}
               className={className}
               disabled={disabled}
