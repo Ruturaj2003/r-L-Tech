@@ -191,29 +191,23 @@ export function ControlledDate<T extends FieldValues>({
  * 5. CONTROLLED COMBOBOX (shadcn Combobox via Controller)
  * ========================================================================== */
 
-export interface ComboboxOption<V extends string = string> {
-  label: string;
-  value: V;
+export interface ComboboxOption {
+  label: string; // what user sees & types
+  value: string; // backend / ID (not used by Combobox itself)
 }
-export interface ControlledComboboxProps<
-  T extends FieldValues,
-  V extends string = string,
-> {
+
+export interface ControlledComboboxProps<T extends FieldValues> {
   name: Path<T>;
   control: Control<T>;
-  options: readonly ComboboxOption<V>[];
+  options: readonly ComboboxOption[];
   error?: string;
   placeholder?: string;
   emptyMessage?: string;
   disabled?: boolean;
-  showClear?: boolean;
   className?: string;
 }
 
-export function ControlledCombobox<
-  T extends FieldValues,
-  V extends string = string,
->({
+export function ControlledCombobox<T extends FieldValues>({
   name,
   control,
   options,
@@ -221,54 +215,42 @@ export function ControlledCombobox<
   placeholder = "Select an option",
   emptyMessage = "No items found.",
   disabled = false,
-  showClear = false,
   className = "",
-}: ControlledComboboxProps<T, V>) {
-  const itemValues = options.map((opt) => opt.value);
+}: ControlledComboboxProps<T>) {
+  const labels = options.map((opt) => opt.label);
 
   return (
     <Controller
       name={name}
       control={control}
-      render={({ field }) => {
-        const selectedOption = options.find((opt) => opt.value === field.value);
-
-        return (
-          <Combobox
-            items={itemValues}
-            value={field.value ?? ""}
-            onValueChange={(val) => {
-              field.onChange(val ?? "");
-            }}
+      render={({ field }) => (
+        <Combobox
+          items={labels}
+          value={field.value ?? ""}
+          onValueChange={field.onChange}
+          disabled={disabled}
+        >
+          <ComboboxInput
+            ref={field.ref}
+            placeholder={placeholder}
+            aria-invalid={!!error}
+            className={className}
             disabled={disabled}
-          >
-            <ComboboxInput
-              ref={field.ref}
-              value={selectedOption?.label ?? ""}
-              placeholder={placeholder}
-              showClear={showClear ? !!field.value : false}
-              aria-invalid={!!error}
-              className={className}
-              disabled={disabled}
-            />
+          />
 
-            <ComboboxContent>
-              <ComboboxEmpty>{emptyMessage}</ComboboxEmpty>
+          <ComboboxContent>
+            <ComboboxEmpty>{emptyMessage}</ComboboxEmpty>
 
-              <ComboboxList>
-                {(item: V) => {
-                  const option = options.find((opt) => opt.value === item);
-                  return (
-                    <ComboboxItem key={item} value={item}>
-                      {option?.label ?? item}
-                    </ComboboxItem>
-                  );
-                }}
-              </ComboboxList>
-            </ComboboxContent>
-          </Combobox>
-        );
-      }}
+            <ComboboxList>
+              {(item: string) => (
+                <ComboboxItem key={item} value={item}>
+                  {item}
+                </ComboboxItem>
+              )}
+            </ComboboxList>
+          </ComboboxContent>
+        </Combobox>
+      )}
     />
   );
 }

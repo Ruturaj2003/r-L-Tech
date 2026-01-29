@@ -126,16 +126,15 @@ export default function OtherMasterForm({
             error={errors.masterType?.message}
             className="min-w-10"
           >
-            <ControlledCombobox<OtherMasterFormData, string>
+            <ControlledCombobox<OtherMasterFormData>
               name="masterType"
               control={control}
               placeholder="Select Master Type"
               disabled={mode === "View" || mode === "Delete"}
-              showClear={mode !== "View" && mode !== "Delete"}
               options={
                 masterTypeOptions?.map((masterType) => ({
-                  label: masterType.masterType,
-                  value: masterType.masterType,
+                  label: masterType.masterType, // what user sees & types
+                  value: masterType.masterType, // backend value (can differ later)
                 })) ?? []
               }
               error={errors.masterType?.message}
