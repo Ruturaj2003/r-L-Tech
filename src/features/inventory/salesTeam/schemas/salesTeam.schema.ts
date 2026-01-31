@@ -26,6 +26,16 @@ export const SalesTeamEntitySchema = z.object({
   designation: z.string(),
 });
 
+export const SalesTeamListResponseSchema = z.object({
+  success: z.literal(true),
+  data: z.array(SalesTeamEntitySchema),
+});
+
+export const SalesTeamSingleResponseSchema = z.object({
+  success: z.literal(true),
+  data: SalesTeamEntitySchema,
+});
+
 /**
  * Sales Team designation option schema.
  *
@@ -69,7 +79,7 @@ export const SalesTeamBranchOptionSchema = z.object({
   branchType: z.string(),
 
   /** Lock status of the branch: Y = Locked, N = Active */
-  lockStaus: z.enum(["Y", "N"]),
+  lockStatus: z.enum(["Y", "N"]),
 });
 
 export type SalesTeamEntity = z.infer<typeof SalesTeamEntitySchema>;
