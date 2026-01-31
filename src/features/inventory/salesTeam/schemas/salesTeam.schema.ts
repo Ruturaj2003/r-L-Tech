@@ -71,3 +71,13 @@ export const SalesTeamBranchOptionSchema = z.object({
   /** Lock status of the branch: Y = Locked, N = Active */
   lockStaus: z.enum(["Y", "N"]),
 });
+
+export type SalesTeamEntity = z.infer<typeof SalesTeamEntitySchema>;
+
+export type SalesTeamBranchOption = z.infer<
+  typeof SalesTeamDesignationOptionSchema
+>;
+
+export type SalesTeamDesignationOptionSchema = z.infer<
+  typeof SalesTeamDesignationOptionSchema
+>;
